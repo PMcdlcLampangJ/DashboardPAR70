@@ -34,18 +34,18 @@
           <div class="flex items-center gap-2">
             <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-500/30 text-emerald-200 border border-emerald-400/30">PAR-70 LIVE</span>
             <span id="conn-badge" class="px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-200 border border-amber-400/30">
-              <i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังเชื่อมต่อชีต...
+              <i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังเชื่อมต่อข้อมูล...
             </span>
           </div>
           <h1 class="text-lg sm:text-xl font-bold tracking-tight">ศูนย์ศึกษาและพัฒนาชุมชนลำปาง (CDL Lampang)</h1>
-          <p class="text-xs text-emerald-100/80">ระบบแดชบอร์ดติดตามข้อมูลแบบสำรวจการวิจัยเชิงปฏิบัติการแบบมีส่วนร่วม (PAR)</p>
+          <p class="text-xs text-emerald-100/80">ระบบแดชบอร์ดติดตามข้อมูลการเก็บตัวอย่างดินภาคสนามและการวิเคราะห์แบบมีส่วนร่วม</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
         <a href="https://pmcdlclampangj.github.io/PAR70/" target="_blank" 
            class="px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5 border border-white/20 shadow-sm">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดแบบสำรวจ PAR70
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดแบบสำรวจ
         </a>
         <button id="btn-refresh" onclick="loadSheetData(true)" 
                 class="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5 shadow-md active:scale-95">
@@ -59,13 +59,13 @@
   <div class="bg-white border-b border-slate-200 py-2 px-4 sm:px-8 text-xs text-slate-500 flex flex-wrap justify-between items-center gap-2 shadow-xs">
     <div class="flex items-center gap-2">
       <i class="fa-solid fa-table-cells text-emerald-600"></i>
-      <span>ดึงข้อมูลสดจาก Google Sheets: <span class="font-semibold text-slate-700">PAR-70 Response Sheet</span></span>
+      <span>แหล่งข้อมูล: <span class="font-semibold text-slate-700">ข้อมูลดิบการเก็บตัวอย่างดินภาคสนาม</span></span>
       <span class="hidden sm:inline text-slate-300">|</span>
-      <span class="hidden sm:inline text-emerald-600"><i class="fa-solid fa-arrows-rotate mr-1"></i>อัปเดตอัตโนมัติทุก 30 วินาที</span>
+      <span class="hidden sm:inline text-emerald-600"><i class="fa-solid fa-arrows-rotate mr-1"></i>อัปเดตอัตโนมัติทุก 20 วินาที</span>
     </div>
     <div class="flex items-center gap-2">
       <span>อัปเดตล่าสุด:</span>
-      <span id="last-updated" class="font-semibold text-slate-700">กำลังโหลด...</span>
+      <span id="last-updated" class="font-semibold text-slate-700">กำลังเชื่อมต่อ...</span>
     </div>
   </div>
 
@@ -79,7 +79,7 @@
           <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ผู้ตอบแบบสำรวจทั้งหมด</p>
             <h3 id="stat-total" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
-            <p class="text-xs text-emerald-600 mt-1 font-medium"><i class="fa-solid fa-check-circle"></i> บันทึกผ่านระบบเรียลไทม์</p>
+            <p class="text-xs text-emerald-600 mt-1 font-medium"><i class="fa-solid fa-check-circle"></i> บันทึกเข้าระบบแล้ว</p>
           </div>
           <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
             <i class="fa-solid fa-users"></i>
@@ -90,9 +90,9 @@
       <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-indigo-500 hover:shadow-md transition">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">กลุ่มพื้นที่ / พิกัดที่ร่วมสำรวจ</p>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">พื้นที่สำรวจ / แปลงเก็บตัวอย่าง</p>
             <h3 id="stat-areas" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
-            <p class="text-xs text-indigo-600 mt-1 font-medium"><i class="fa-solid fa-location-dot"></i> ครอบคลุมชุมชนเป้าหมาย</p>
+            <p class="text-xs text-indigo-600 mt-1 font-medium"><i class="fa-solid fa-location-dot"></i> จุดพิกัดภาคสนาม</p>
           </div>
           <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
             <i class="fa-solid fa-map-location-dot"></i>
@@ -103,9 +103,9 @@
       <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-amber-500 hover:shadow-md transition">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">เอกสาร / รูปผลการวิเคราะห์</p>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ภาพวิเคราะห์ดิน / หลักฐานแนบ</p>
             <h3 id="stat-images" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
-            <p class="text-xs text-amber-600 mt-1 font-medium"><i class="fa-solid fa-images"></i> พร้อมเปิดตรวจผลงานวิเคราะห์</p>
+            <p class="text-xs text-amber-600 mt-1 font-medium"><i class="fa-solid fa-images"></i> พร้อมเปิดตรวจดูรูปภาพ</p>
           </div>
           <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl">
             <i class="fa-solid fa-file-image"></i>
@@ -117,8 +117,8 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ข้อมูลส่งเข้ามาล่าสุด</p>
-            <h3 id="stat-latest-time" class="text-lg font-bold text-slate-800 mt-2 truncate max-w-[150px]">--</h3>
-            <p class="text-xs text-teal-600 mt-1 font-medium"><i class="fa-solid fa-clock-rotate-left"></i> พร้อมรับข้อมูลใหม่อย่างต่อเนื่อง</p>
+            <h3 id="stat-latest-time" class="text-sm font-bold text-slate-800 mt-2 truncate max-w-[150px]">--</h3>
+            <p class="text-xs text-teal-600 mt-1 font-medium"><i class="fa-solid fa-clock-rotate-left"></i> Real-time Sync</p>
           </div>
           <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-xl">
             <i class="fa-solid fa-clock"></i>
@@ -133,11 +133,11 @@
         <div class="flex items-center justify-between mb-4">
           <div>
             <h4 class="font-bold text-slate-800 flex items-center gap-2">
-              <i class="fa-solid fa-chart-column text-emerald-600"></i> สัดส่วนและจำนวนการส่งแบบสำรวจจำแนกตามพื้นที่/กลุ่มเป้าหมาย
+              <i class="fa-solid fa-chart-column text-emerald-600"></i> สัดส่วนและจำนวนการส่งแบบสำรวจจำแนกตามพื้นที่
             </h4>
-            <p class="text-xs text-slate-400">วิเคราะห์ตามหน่วยงานหรือพื้นที่ระบุในแบบสำรวจ PAR</p>
+            <p class="text-xs text-slate-400">จำแนกตามตำบล/หมู่บ้านที่เก็บตัวอย่างดิน</p>
           </div>
-          <span id="badge-chart-count" class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-semibold">0 คน</span>
+          <span id="badge-chart-count" class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-semibold">0 รายการ</span>
         </div>
         <div class="h-64 relative">
           <canvas id="barAreaChart"></canvas>
@@ -147,16 +147,16 @@
       <div class="glass-card rounded-2xl p-5 shadow-sm flex flex-col justify-between">
         <div class="mb-2">
           <h4 class="font-bold text-slate-800 flex items-center gap-2">
-            <i class="fa-solid fa-chart-pie text-indigo-600"></i> สัดส่วนการมีรูปผลการวิเคราะห์
+            <i class="fa-solid fa-chart-pie text-indigo-600"></i> สัดส่วนรูปภาพผลการวิเคราะห์
           </h4>
-          <p class="text-xs text-slate-400">สถานะแนบผลวิเคราะห์รายบุคคล / เอกสารแนบ</p>
+          <p class="text-xs text-slate-400">สถานะการแนบไฟล์รูปภาพการวิเคราะห์ดิน</p>
         </div>
         <div class="h-56 relative flex items-center justify-center">
           <canvas id="pieImageChart"></canvas>
         </div>
         <div class="pt-2 border-t border-slate-100 flex justify-around text-xs text-slate-500">
-          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> แนบรูป/ผลงาน</span>
-          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span> ยังไม่แนบ</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> มีรูปภาพแนบ</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span> ยังไม่มีรูป</span>
         </div>
       </div>
     </div>
@@ -166,14 +166,14 @@
       <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-white">
         <div>
           <h4 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-            <i class="fa-solid fa-list-check text-emerald-600"></i> รายชื่อผู้ตอบแบบสำรวจ และผลการวิเคราะห์รายบุคคล
+            <i class="fa-solid fa-list-check text-emerald-600"></i> รายชื่อผู้ส่งแบบสำรวจ และรูปภาพการวิเคราะห์ดินรายบุคคล
           </h4>
-          <p class="text-xs text-slate-400">คลิกที่ปุ่ม <span class="font-semibold text-emerald-600">"ดูรูปการวิเคราะห์"</span> เพื่อดูรายละเอียดผลงานหรือไฟล์ที่แนบมา</p>
+          <p class="text-xs text-slate-400">คลิกที่ปุ่ม <span class="font-semibold text-emerald-600">"ดูรูปการวิเคราะห์"</span> เพื่อดูรูปดินหรือไฟล์ที่แนบมาจากแปลงสำรวจ</p>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
           <div class="relative w-full sm:w-64">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-            <input type="text" id="searchInput" oninput="renderTable()" placeholder="ค้นหาชื่อ, พื้นที่, หรือข้อมูล..." 
+            <input type="text" id="searchInput" oninput="renderTable()" placeholder="ค้นหาชื่อ, ที่อยู่, หรือพิกัด..." 
                    class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
           </div>
         </div>
@@ -185,10 +185,10 @@
             <tr>
               <th class="py-3 px-4">#</th>
               <th class="py-3 px-4">วัน-เวลาที่ส่ง</th>
-              <th class="py-3 px-4">ชื่อ - นามสกุล / ผู้ให้ข้อมูล</th>
-              <th class="py-3 px-4">พื้นที่ / สังกัด / อำเภอ</th>
-              <th class="py-3 px-4">ประเด็นการวิเคราะห์</th>
-              <th class="py-3 px-4 text-center">รูปผลการวิเคราะห์</th>
+              <th class="py-3 px-4">ชื่อผู้สำรวจ / เกษตรกร</th>
+              <th class="py-3 px-4">ที่อยู่ / พื้นที่แปลง</th>
+              <th class="py-3 px-4">พิกัดแปลง (GPS)</th>
+              <th class="py-3 px-4 text-center">รูปการวิเคราะห์</th>
             </tr>
           </thead>
           <tbody id="surveyTableBody" class="divide-y divide-slate-100">
@@ -210,11 +210,11 @@
 
   <!-- Modal ดูรูปผลการวิเคราะห์ -->
   <div id="imageModal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-fade-in">
+    <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
       <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
         <div>
-          <h3 id="modalName" class="font-bold text-slate-800 text-base">รูปผลการวิเคราะห์</h3>
-          <p id="modalArea" class="text-xs text-emerald-600 font-medium">สังกัด / ชุมชน</p>
+          <h3 id="modalName" class="font-bold text-slate-800 text-base">รูปผลการวิเคราะห์ดิน</h3>
+          <p id="modalArea" class="text-xs text-emerald-600 font-medium">ที่ตั้งแปลง</p>
         </div>
         <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600 transition">
           <i class="fa-solid fa-xmark"></i>
@@ -224,17 +224,17 @@
       <div class="p-4 overflow-y-auto flex-1 flex flex-col items-center justify-center bg-slate-100/50 min-h-[300px]">
         <div id="modalLoading" class="text-center py-8">
           <i class="fa-solid fa-spinner fa-spin text-3xl text-emerald-600 mb-2"></i>
-          <p class="text-xs text-slate-500">กำลังโหลดรูปภาพผลการวิเคราะห์...</p>
+          <p class="text-xs text-slate-500">กำลังโหลดภาพการวิเคราะห์...</p>
         </div>
-        <img id="modalImg" src="" alt="รูปผลการวิเคราะห์" class="max-h-[60vh] max-w-full rounded-xl shadow-md hidden object-contain">
+        <img id="modalImg" src="" alt="รูปผลการวิเคราะห์ดิน" class="max-h-[60vh] max-w-full rounded-xl shadow-md hidden object-contain">
         <div id="modalFallback" class="hidden text-center py-8 px-4">
-          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
-            <i class="fa-solid fa-chart-radar"></i>
+          <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+            <i class="fa-solid fa-image"></i>
           </div>
-          <h4 class="font-bold text-slate-700 mb-1">ผลการวิเคราะห์ข้อมูล PAR</h4>
-          <p class="text-xs text-slate-500 max-w-md mx-auto mb-3" id="modalTopic">บันทึกข้อมูลแล้วเรียบร้อย ยังไม่ได้แนบไฟล์รูปภาพภาพถ่าย</p>
+          <h4 class="font-bold text-slate-700 mb-1">พบไฟล์รูปภาพผลการวิเคราะห์</h4>
+          <p class="text-xs text-slate-500 max-w-md mx-auto mb-4">กดปุ่มด้านล่างเพื่อเปิดดูภาพต้นฉบับความละเอียดสูงบน Google Drive ได้โดยตรง</p>
           <a id="modalExternalBtn" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 shadow-sm transition">
-            <i class="fa-solid fa-external-link"></i> เปิดดูเอกสารแนบต้นฉบับ
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดดูรูปภาพต้นฉบับบน Google Drive
           </a>
         </div>
       </div>
@@ -252,36 +252,33 @@
   </footer>
 
   <script>
-    // URL ชีตแบบ CSV จาก Google Sheets
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTn5ONVvtwfif6i5VEMLcba5H37sU72lGO_lSjDahLY32Z79bYyhe4KzJoi0D517quhPwVXOIuONIm4/pub?gid=0&single=true&output=csv";
 
     let rawData = [];
     let barChartInstance = null;
     let pieChartInstance = null;
 
-    // ฟังก์ชันแปลง URL Google Drive ให้ออกมาเป็น Direct Image Link
+    // แปลงลิงก์ Google Drive ให้เปิดแสดงเป็นรูปภาพ Thumbnail
     function formatDriveImageUrl(url) {
       if (!url) return "";
-      url = url.trim();
       const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
       if (match && match[1]) {
-        return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+        return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
       }
-      return url;
+      return url.trim();
     }
 
-    // ฟังก์ชันดึง CSV พร้อมระบบ Auto-Fallback แก้ปัญหา CORS
     async function fetchCSVWithFallback() {
-      const cacheBustUrl = SHEET_CSV_URL + "&t=" + new Date().getTime();
+      const cacheBustUrl = SHEET_CSV_URL + "&_t=" + Date.now();
       try {
         const res = await fetch(cacheBustUrl);
-        if (!res.ok) throw new Error("Direct fetch status: " + res.status);
+        if (!res.ok) throw new Error("Direct error: " + res.status);
         return await res.text();
       } catch (err) {
-        console.warn("Direct fetch failed, trying CORS proxy fallback...", err);
+        console.warn("Direct fetch blocked, trying proxy...", err);
         const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(cacheBustUrl)}`;
         const proxyRes = await fetch(proxyUrl);
-        if (!proxyRes.ok) throw new Error("Proxy fetch failed");
+        if (!proxyRes.ok) throw new Error("Proxy error");
         return await proxyRes.text();
       }
     }
@@ -294,13 +291,13 @@
       try {
         const csvText = await fetchCSVWithFallback();
         
+        // อ่านแบบ Array ป้องกันปัญหาไม่มี Header Row ในแถวที่ 1
         Papa.parse(csvText, {
-          header: true,
+          header: false,
           skipEmptyLines: true,
           complete: function(results) {
             if (results.data && results.data.length > 0) {
-              // ทำความสะอาดและตรวจจับ Header
-              rawData = processRows(results.data);
+              rawData = parseRowsFromArray(results.data);
               updateDashboardUI();
               badge.className = "px-2 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30";
               badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> เชื่อมต่อสด (${rawData.length} แถว)`;
@@ -309,82 +306,84 @@
             }
           },
           error: function(err) {
-            console.error("PapaParse error:", err);
+            console.error("Parse error:", err);
             badge.className = "px-2 py-0.5 text-xs rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/30";
-            badge.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i> อ่านข้อมูลผิดพลาด`;
+            badge.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i> อ่านข้อมูลไม่สำเร็จ`;
           }
         });
       } catch (error) {
-        console.error("Fetch CSV error:", error);
+        console.error("Fetch error:", error);
         badge.className = "px-2 py-0.5 text-xs rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/30";
-        badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> เชื่อมต่อไม่สำเร็จ`;
+        badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ไม่สามารถดึงชีตได้`;
       } finally {
         if (icon) icon.classList.remove("fa-spin");
         document.getElementById("last-updated").textContent = new Date().toLocaleTimeString('th-TH');
       }
     }
 
-    // ฟังก์ชันฉลาดค้นหาคอลัมน์จากคำสำคัญ
-    function processRows(rows) {
-      return rows.map((r, index) => {
-        const keys = Object.keys(r);
-        const findVal = (terms) => {
-          for (let key of keys) {
-            for (let term of terms) {
-              if (key.toLowerCase().includes(term.toLowerCase())) {
-                return (r[key] || "").trim();
-              }
-            }
+    // ประมวลผลจาก Array ตามโครงสร้างชีตของคุณนันทวัตธ์
+    function parseRowsFromArray(rows) {
+      // ตรวจสอบว่าแถวแรกคือ Header คำว่า "ประทับเวลา" หรือเป็นข้อมูลจริง
+      let startIdx = 0;
+      if (rows[0] && rows[0][0] && (rows[0][0].includes("ประทับเวลา") || rows[0][0].includes("Timestamp") || rows[0][0].includes("เวลา"))) {
+        startIdx = 1;
+      }
+
+      const items = [];
+      for (let i = startIdx; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.length === 0 || !row[0]) continue;
+
+        const timestamp = (row[0] || "").trim();
+        const name = (row[1] || "").trim() || `ผู้ให้ข้อมูลลำดับที่ ${i + 1}`;
+        const area = (row[3] || row[2] || "").trim() || "ไม่ระบุพื้นที่";
+        const gps = (row[4] || "").trim() || "-";
+
+        // ค้นหา URL รูปภาพ/Google Drive จากคอลัมน์ใดๆ ในแถว
+        let driveUrl = "";
+        for (let col of row) {
+          if (col && (col.includes("drive.google.com") || col.includes("http://") || col.includes("https://"))) {
+            driveUrl = col.trim();
+            break;
           }
-          return "";
-        };
+        }
 
-        const timestamp = findVal(["timestamp", "ประทับเวลา", "เวลา", "date"]) || `รายการที่ ${index + 1}`;
-        const name = findVal(["ชื่อ", "name", "ผู้ให้", "ผู้ตอบ", "ผู้สำรวจ"]) || `ผู้ตอบแบบสำรวจ #${index + 1}`;
-        const area = findVal(["พื้นที่", "อำเภอ", "ตำบล", "หมู่", "หน่วยงาน", "องค์กร", "ชุมชน", "location", "address", "area"]) || "พื้นที่ทั่วไป/ไม่ระบุ";
-        const topic = findVal(["วิเคราะห์", "ประเด็น", "ปัญหา", "เรื่อง", "รายละเอียด", "หัวข้อ", "topic", "detail"]) || "ข้อมูลสำรวจ PAR ทั่วไป";
-        const image = findVal(["รูป", "ภาพ", "image", "file", "แนบ", "หลักฐาน", "drive", "link", "url"]);
-
-        return {
-          id: index + 1,
+        items.push({
+          id: i + 1,
           timestamp,
           name,
           area,
-          topic,
-          imageUrl: image,
-          raw: r
-        };
-      });
+          gps,
+          imageUrl: driveUrl
+        });
+      }
+      return items;
     }
 
     function updateDashboardUI() {
-      // 1. KPI Cards
       const total = rawData.length;
       const uniqueAreas = new Set(rawData.map(d => d.area)).size;
       const imageCount = rawData.filter(d => d.imageUrl && d.imageUrl.length > 5).length;
       const latestTime = rawData.length > 0 ? rawData[rawData.length - 1].timestamp : "--";
 
       document.getElementById("stat-total").textContent = total.toLocaleString() + " คน";
-      document.getElementById("stat-areas").textContent = uniqueAreas.toLocaleString() + " พื้นที่";
+      document.getElementById("stat-areas").textContent = uniqueAreas.toLocaleString() + " จุด";
       document.getElementById("stat-images").textContent = imageCount.toLocaleString() + " รายการ";
       document.getElementById("stat-latest-time").textContent = latestTime.split(" ")[0] || latestTime;
-      document.getElementById("badge-chart-count").textContent = `รวม ${total} คน`;
+      document.getElementById("badge-chart-count").textContent = `รวม ${total} รายการ`;
 
-      // 2. Charts
       renderCharts();
-
-      // 3. Table
       renderTable();
     }
 
     function renderCharts() {
-      // Bar Chart: นับจำนวนตามพื้นที่
+      // Bar Chart: พื้นที่
       const areaCounts = {};
       rawData.forEach(d => {
-        areaCounts[d.area] = (areaCounts[d.area] || 0) + 1;
+        // ย่อชื่อตำบลให้สั้นลงเพื่อแสดงบนกราฟ
+        let label = d.area.length > 25 ? d.area.substring(0, 25) + "..." : d.area;
+        areaCounts[label] = (areaCounts[label] || 0) + 1;
       });
-      const areaLabels = Object.keys(areaCounts);
-      const areaValues = Object.values(areaCounts);
 
       const ctxBar = document.getElementById("barAreaChart").getContext("2d");
       if (barChartInstance) barChartInstance.destroy();
@@ -392,10 +391,10 @@
       barChartInstance = new Chart(ctxBar, {
         type: 'bar',
         data: {
-          labels: areaLabels,
+          labels: Object.keys(areaCounts),
           datasets: [{
-            label: 'จำนวนผู้ตอบ (คน)',
-            data: areaValues,
+            label: 'จำนวน (ราย)',
+            data: Object.values(areaCounts),
             backgroundColor: '#10b981',
             borderRadius: 6
           }]
@@ -411,7 +410,7 @@
         }
       });
 
-      // Pie Chart: แนบรูป vs ไม่แนบรูป
+      // Pie Chart: มีรูป vs ไม่มีรูป
       const hasImg = rawData.filter(d => d.imageUrl && d.imageUrl.length > 5).length;
       const noImg = rawData.length - hasImg;
 
@@ -421,7 +420,7 @@
       pieChartInstance = new Chart(ctxPie, {
         type: 'doughnut',
         data: {
-          labels: ['แนบรูป/ผลงาน', 'ยังไม่แนบ'],
+          labels: ['มีรูปภาพแนบ', 'ยังไม่มีรูปภาพ'],
           datasets: [{
             data: [hasImg, noImg],
             backgroundColor: ['#10b981', '#cbd5e1'],
@@ -447,7 +446,7 @@
       const filtered = rawData.filter(item => {
         return item.name.toLowerCase().includes(q) || 
                item.area.toLowerCase().includes(q) || 
-               item.topic.toLowerCase().includes(q) ||
+               item.gps.toLowerCase().includes(q) ||
                item.timestamp.toLowerCase().includes(q);
       });
 
@@ -465,7 +464,7 @@
             <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${item.timestamp}</td>
             <td class="py-3 px-4 font-bold text-slate-800">${item.name}</td>
             <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-medium text-xs">${item.area}</span></td>
-            <td class="py-3 px-4 text-slate-600 max-w-xs truncate">${item.topic}</td>
+            <td class="py-3 px-4 text-slate-500 font-mono text-xs">${item.gps}</td>
             <td class="py-3 px-4 text-center">
               <button onclick="openModal(${item.id})" 
                       class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 mx-auto transition shadow-sm ${
@@ -473,8 +472,8 @@
                         ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
                         : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                       }">
-                <i class="fa-solid ${hasImg ? 'fa-image' : 'fa-chart-simple'}"></i>
-                <span>${hasImg ? 'ดูรูปการวิเคราะห์' : 'ดูสรุปข้อมูล'}</span>
+                <i class="fa-solid ${hasImg ? 'fa-image' : 'fa-circle-info'}"></i>
+                <span>${hasImg ? 'ดูรูปการวิเคราะห์' : 'ดูรายละเอียด'}</span>
               </button>
             </td>
           </tr>
@@ -489,9 +488,8 @@
       if (!item) return;
 
       document.getElementById("modalName").textContent = item.name;
-      document.getElementById("modalArea").textContent = `สังกัด / พื้นที่: ${item.area}`;
-      document.getElementById("modalTimestamp").textContent = `เวลาบันทึก: ${item.timestamp}`;
-      document.getElementById("modalTopic").textContent = item.topic;
+      document.getElementById("modalArea").textContent = `ที่ตั้งแปลง: ${item.area} (GPS: ${item.gps})`;
+      document.getElementById("modalTimestamp").textContent = `ส่งเมื่อ: ${item.timestamp}`;
 
       const modalImg = document.getElementById("modalImg");
       const modalFallback = document.getElementById("modalFallback");
@@ -513,7 +511,6 @@
           modalImg.classList.remove("hidden");
         };
         modalImg.onerror = () => {
-          // หากรูปติดสิทธิ์ Private หรือเปิดตรงไม่ได้ ให้เปิดปุ่มลิงก์แทน
           modalLoading.classList.add("hidden");
           modalFallback.classList.remove("hidden");
         };
@@ -531,14 +528,13 @@
 
     function showEmpty() {
       document.getElementById("surveyTableBody").innerHTML = `
-        <tr><td colspan="6" class="text-center py-8 text-slate-400">ยังไม่มีข้อมูลใน Google Sheet หรือชีตยังว่างอยู่</td></tr>
+        <tr><td colspan="6" class="text-center py-8 text-slate-400">ยังไม่มีข้อมูลใน Google Sheets</td></tr>
       `;
     }
 
-    // โหลดครั้งแรก และตั้งเวลารีเฟรชอัตโนมัติทุก 30 วินาที
     window.addEventListener("DOMContentLoaded", () => {
       loadSheetData();
-      setInterval(() => loadSheetData(false), 30000);
+      setInterval(() => loadSheetData(false), 20000);
     });
   </script>
 </body>
