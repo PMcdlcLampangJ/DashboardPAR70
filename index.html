@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PAR 70 Real-Time Dashboard | CDL Lampang</title>
+  <title>PAR 70 Soil Quality Dashboard | CDL Lampang</title>
   
   <!-- Tailwind CSS & Font Awesome & Chart.js & PapaParse -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,17 +28,17 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center border border-white/20 text-emerald-300 text-xl sm:text-2xl shadow-inner">
-          <i class="fa-solid fa-seedling"></i>
+          <i class="fa-solid fa-flask-vial"></i>
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-500/30 text-emerald-200 border border-emerald-400/30">PAR-70 LIVE</span>
+            <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-500/30 text-emerald-200 border border-emerald-400/30">PAR-70 SOIL LAB</span>
             <span id="conn-badge" class="px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-200 border border-amber-400/30">
               <i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังเชื่อมต่อข้อมูล...
             </span>
           </div>
           <h1 class="text-lg sm:text-xl font-bold tracking-tight">ศูนย์ศึกษาและพัฒนาชุมชนลำปาง (CDL Lampang)</h1>
-          <p class="text-xs text-emerald-100/80">ระบบแดชบอร์ดติดตามข้อมูลการเก็บตัวอย่างดินภาคสนามและการวิเคราะห์แบบมีส่วนร่วม</p>
+          <p class="text-xs text-emerald-100/80">ระบบแดชบอร์ดติดตามข้อมูลวิเคราะห์คุณภาพดินภาคสนาม (pH, N, P, K)</p>
         </div>
       </div>
 
@@ -58,7 +58,7 @@
   <!-- Sub-bar Info -->
   <div class="bg-white border-b border-slate-200 py-2 px-4 sm:px-8 text-xs text-slate-500 flex flex-wrap justify-between items-center gap-2 shadow-xs">
     <div class="flex items-center gap-2">
-      <i class="fa-solid fa-table-cells text-emerald-600"></i>
+      <i class="fa-solid fa-database text-emerald-600"></i>
       <span>แหล่งข้อมูล: <span class="font-semibold text-slate-700">ข้อมูลดิบการเก็บตัวอย่างดินภาคสนาม</span></span>
       <span class="hidden sm:inline text-slate-300">|</span>
       <span class="hidden sm:inline text-emerald-600"><i class="fa-solid fa-arrows-rotate mr-1"></i>อัปเดตอัตโนมัติทุก 20 วินาที</span>
@@ -72,56 +72,60 @@
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
 
-    <!-- KPI Summary Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-emerald-500 hover:shadow-md transition">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ผู้ตอบแบบสำรวจทั้งหมด</p>
-            <h3 id="stat-total" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
-            <p class="text-xs text-emerald-600 mt-1 font-medium"><i class="fa-solid fa-check-circle"></i> บันทึกเข้าระบบแล้ว</p>
-          </div>
-          <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
-            <i class="fa-solid fa-users"></i>
-          </div>
-        </div>
-      </div>
-
-      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-indigo-500 hover:shadow-md transition">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">พื้นที่สำรวจ / แปลงเก็บตัวอย่าง</p>
-            <h3 id="stat-areas" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
-            <p class="text-xs text-indigo-600 mt-1 font-medium"><i class="fa-solid fa-location-dot"></i> จุดพิกัดภาคสนาม</p>
-          </div>
-          <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
-            <i class="fa-solid fa-map-location-dot"></i>
-          </div>
-        </div>
-      </div>
-
+    <!-- KPI Summary: Soil Parameters (pH, N, P, K) -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <!-- pH Card -->
       <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-amber-500 hover:shadow-md transition">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ภาพวิเคราะห์ดิน / หลักฐานแนบ</p>
-            <h3 id="stat-images" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
-            <p class="text-xs text-amber-600 mt-1 font-medium"><i class="fa-solid fa-images"></i> พร้อมเปิดตรวจดูรูปภาพ</p>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ค่ากรด-ด่างเฉลี่ย (pH)</p>
+            <h3 id="stat-ph" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+            <p id="stat-ph-status" class="text-xs text-amber-600 mt-1 font-medium"><i class="fa-solid fa-vial"></i> ค่าเฉลี่ยแปลงสำรวจ</p>
           </div>
-          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl">
-            <i class="fa-solid fa-file-image"></i>
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold">
+            pH
           </div>
         </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-teal-500 hover:shadow-md transition">
+      <!-- Nitrogen Card -->
+      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-blue-500 hover:shadow-md transition">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ข้อมูลส่งเข้ามาล่าสุด</p>
-            <h3 id="stat-latest-time" class="text-sm font-bold text-slate-800 mt-2 truncate max-w-[150px]">--</h3>
-            <p class="text-xs text-teal-600 mt-1 font-medium"><i class="fa-solid fa-clock-rotate-left"></i> Real-time Sync</p>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ไนโตรเจน (N)</p>
+            <h3 id="stat-n" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+            <p id="stat-n-status" class="text-xs text-blue-600 mt-1 font-medium"><i class="fa-solid fa-leaf"></i> ความพร้อมใช้ในดิน</p>
           </div>
-          <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-xl">
-            <i class="fa-solid fa-clock"></i>
+          <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl font-bold">
+            N
+          </div>
+        </div>
+      </div>
+
+      <!-- Phosphorus Card -->
+      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-emerald-500 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ฟอสฟอรัส (P)</p>
+            <h3 id="stat-p" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+            <p id="stat-p-status" class="text-xs text-emerald-600 mt-1 font-medium"><i class="fa-solid fa-seedling"></i> ความพร้อมใช้ในดิน</p>
+          </div>
+          <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold">
+            P
+          </div>
+        </div>
+      </div>
+
+      <!-- Potassium Card -->
+      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-purple-500 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">โพแทสเซียม (K)</p>
+            <h3 id="stat-k" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+            <p id="stat-k-status" class="text-xs text-purple-600 mt-1 font-medium"><i class="fa-solid fa-tree"></i> ความพร้อมใช้ในดิน</p>
+          </div>
+          <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-xl font-bold">
+            K
           </div>
         </div>
       </div>
@@ -129,34 +133,37 @@
 
     <!-- Charts Row -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <!-- Chart 1: Bar Chart แสดงค่า pH รายแปลง -->
       <div class="lg:col-span-2 glass-card rounded-2xl p-5 shadow-sm">
         <div class="flex items-center justify-between mb-4">
           <div>
             <h4 class="font-bold text-slate-800 flex items-center gap-2">
-              <i class="fa-solid fa-chart-column text-emerald-600"></i> สัดส่วนและจำนวนการส่งแบบสำรวจจำแนกตามพื้นที่
+              <i class="fa-solid fa-chart-column text-emerald-600"></i> ระดับค่าความเป็นกรด-ด่าง (Soil pH) รายแปลง
             </h4>
-            <p class="text-xs text-slate-400">จำแนกตามตำบล/หมู่บ้านที่เก็บตัวอย่างดิน</p>
+            <p class="text-xs text-slate-400">ช่วงที่เหมาะสมต่อการดูดซึมธาตุอาหารพืชคือ 5.5 - 6.5</p>
           </div>
           <span id="badge-chart-count" class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-semibold">0 รายการ</span>
         </div>
         <div class="h-64 relative">
-          <canvas id="barAreaChart"></canvas>
+          <canvas id="barPhChart"></canvas>
         </div>
       </div>
 
+      <!-- Chart 2: Polar/Radar แสดงสมดุล N-P-K เฉลี่ย -->
       <div class="glass-card rounded-2xl p-5 shadow-sm flex flex-col justify-between">
         <div class="mb-2">
           <h4 class="font-bold text-slate-800 flex items-center gap-2">
-            <i class="fa-solid fa-chart-pie text-indigo-600"></i> สัดส่วนรูปภาพผลการวิเคราะห์
+            <i class="fa-solid fa-chart-pie text-indigo-600"></i> สัดส่วนธาตุอาหารหลัก (N-P-K)
           </h4>
-          <p class="text-xs text-slate-400">สถานะการแนบไฟล์รูปภาพการวิเคราะห์ดิน</p>
+          <p class="text-xs text-slate-400">เปรียบเทียบระดับความสมบูรณ์ของธาตุอาหารในภาพรวม</p>
         </div>
         <div class="h-56 relative flex items-center justify-center">
-          <canvas id="pieImageChart"></canvas>
+          <canvas id="npkRadarChart"></canvas>
         </div>
         <div class="pt-2 border-t border-slate-100 flex justify-around text-xs text-slate-500">
-          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> มีรูปภาพแนบ</span>
-          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span> ยังไม่มีรูป</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> N</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> P</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-purple-500 inline-block"></span> K</span>
         </div>
       </div>
     </div>
@@ -166,9 +173,9 @@
       <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-white">
         <div>
           <h4 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-            <i class="fa-solid fa-list-check text-emerald-600"></i> รายชื่อผู้ส่งแบบสำรวจ และรูปภาพการวิเคราะห์ดินรายบุคคล
+            <i class="fa-solid fa-list-check text-emerald-600"></i> รายชื่อแปลงสำรวจ และผลการตรวจวิเคราะห์ดิน (pH, N, P, K)
           </h4>
-          <p class="text-xs text-slate-400">คลิกที่ปุ่ม <span class="font-semibold text-emerald-600">"ดูรูปการวิเคราะห์"</span> เพื่อดูรูปดินหรือไฟล์ที่แนบมาจากแปลงสำรวจ</p>
+          <p class="text-xs text-slate-400">คลิกที่ปุ่ม <span class="font-semibold text-emerald-600">"ดูรูปการวิเคราะห์"</span> เพื่อดูภาพตัวอย่างดินหรือภาพทดสอบภาคสนาม</p>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
           <div class="relative w-full sm:w-64">
@@ -183,19 +190,22 @@
         <table class="w-full text-left text-xs text-slate-600 border-collapse">
           <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200">
             <tr>
-              <th class="py-3 px-4">#</th>
-              <th class="py-3 px-4">วัน-เวลาที่ส่ง</th>
-              <th class="py-3 px-4">ชื่อผู้สำรวจ / เกษตรกร</th>
-              <th class="py-3 px-4">ที่อยู่ / พื้นที่แปลง</th>
-              <th class="py-3 px-4">พิกัดแปลง (GPS)</th>
-              <th class="py-3 px-4 text-center">รูปการวิเคราะห์</th>
+              <th class="py-3 px-3">#</th>
+              <th class="py-3 px-3">วัน-เวลา</th>
+              <th class="py-3 px-3">ผู้สำรวจ / แปลง</th>
+              <th class="py-3 px-3">พื้นที่ / ที่อยู่</th>
+              <th class="py-3 px-2 text-center bg-amber-50/50">pH</th>
+              <th class="py-3 px-2 text-center bg-blue-50/50">N</th>
+              <th class="py-3 px-2 text-center bg-emerald-50/50">P</th>
+              <th class="py-3 px-2 text-center bg-purple-50/50">K</th>
+              <th class="py-3 px-3 text-center">รูปการวิเคราะห์</th>
             </tr>
           </thead>
           <tbody id="surveyTableBody" class="divide-y divide-slate-100">
             <tr>
-              <td colspan="6" class="text-center py-10 text-slate-400">
+              <td colspan="9" class="text-center py-10 text-slate-400">
                 <i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-500 mb-2"></i>
-                <p>กำลังดาวน์โหลดและประมวลผลข้อมูลชีต...</p>
+                <p>กำลังดาวน์โหลดและประมวลผลข้อมูล...</p>
               </td>
             </tr>
           </tbody>
@@ -229,13 +239,33 @@
         <img id="modalImg" src="" alt="รูปผลการวิเคราะห์ดิน" class="max-h-[60vh] max-w-full rounded-xl shadow-md hidden object-contain">
         <div id="modalFallback" class="hidden text-center py-8 px-4">
           <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
-            <i class="fa-solid fa-image"></i>
+            <i class="fa-solid fa-flask-vial"></i>
           </div>
-          <h4 class="font-bold text-slate-700 mb-1">พบไฟล์รูปภาพผลการวิเคราะห์</h4>
-          <p class="text-xs text-slate-500 max-w-md mx-auto mb-4">กดปุ่มด้านล่างเพื่อเปิดดูภาพต้นฉบับความละเอียดสูงบน Google Drive ได้โดยตรง</p>
+          <h4 class="font-bold text-slate-700 mb-1">พบผลการวิเคราะห์ดินและเอกสารแนบ</h4>
+          <p class="text-xs text-slate-500 max-w-md mx-auto mb-4">กดปุ่มด้านล่างเพื่อเปิดดูภาพถ่ายหรือเอกสารต้นฉบับบน Google Drive ได้โดยตรง</p>
           <a id="modalExternalBtn" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 shadow-sm transition">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดดูรูปภาพต้นฉบับบน Google Drive
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดดูไฟล์ภาพบน Google Drive
           </a>
+        </div>
+      </div>
+
+      <!-- Quick Soil Summary Inside Modal -->
+      <div id="modalSoilBar" class="px-4 py-3 bg-slate-50 border-t border-slate-100 grid grid-cols-4 gap-2 text-center text-xs">
+        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-xs">
+          <span class="text-slate-400 block text-[10px]">pH</span>
+          <span id="modalValPh" class="font-bold text-amber-600 text-sm">--</span>
+        </div>
+        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-xs">
+          <span class="text-slate-400 block text-[10px]">N (ไนโตรเจน)</span>
+          <span id="modalValN" class="font-bold text-blue-600 text-sm">--</span>
+        </div>
+        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-xs">
+          <span class="text-slate-400 block text-[10px]">P (ฟอสฟอรัส)</span>
+          <span id="modalValP" class="font-bold text-emerald-600 text-sm">--</span>
+        </div>
+        <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-xs">
+          <span class="text-slate-400 block text-[10px]">K (โพแทสเซียม)</span>
+          <span id="modalValK" class="font-bold text-purple-600 text-sm">--</span>
         </div>
       </div>
 
@@ -256,9 +286,8 @@
 
     let rawData = [];
     let barChartInstance = null;
-    let pieChartInstance = null;
+    let radarChartInstance = null;
 
-    // แปลงลิงก์ Google Drive ให้เปิดแสดงเป็นรูปภาพ Thumbnail
     function formatDriveImageUrl(url) {
       if (!url) return "";
       const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
@@ -291,7 +320,6 @@
       try {
         const csvText = await fetchCSVWithFallback();
         
-        // อ่านแบบ Array ป้องกันปัญหาไม่มี Header Row ในแถวที่ 1
         Papa.parse(csvText, {
           header: false,
           skipEmptyLines: true,
@@ -321,11 +349,21 @@
       }
     }
 
-    // ประมวลผลจาก Array ตามโครงสร้างชีตของคุณนันทวัตธ์
+    // ฟังก์ชันช่วยแยกแยะค่าตัวเลขหรือระดับ (ต่ำ ปานกลาง สูง)
+    function parseNutrientLevel(val) {
+      if (!val) return "-";
+      val = val.trim();
+      return val;
+    }
+
+    // ประมวลผลจากคอลัมน์ A, B, C, D... และค้นหา pH, N, P, K อัตโนมัติ
     function parseRowsFromArray(rows) {
-      // ตรวจสอบว่าแถวแรกคือ Header คำว่า "ประทับเวลา" หรือเป็นข้อมูลจริง
       let startIdx = 0;
+      let headerRow = null;
+
+      // ตรวจสอบว่าแถวแรกเป็น Header หรือไม่
       if (rows[0] && rows[0][0] && (rows[0][0].includes("ประทับเวลา") || rows[0][0].includes("Timestamp") || rows[0][0].includes("เวลา"))) {
+        headerRow = rows[0];
         startIdx = 1;
       }
 
@@ -335,16 +373,45 @@
         if (!row || row.length === 0 || !row[0]) continue;
 
         const timestamp = (row[0] || "").trim();
-        const name = (row[1] || "").trim() || `ผู้ให้ข้อมูลลำดับที่ ${i + 1}`;
+        const name = (row[1] || "").trim() || `ผู้ให้ข้อมูล #${i + 1}`;
         const area = (row[3] || row[2] || "").trim() || "ไม่ระบุพื้นที่";
         const gps = (row[4] || "").trim() || "-";
 
-        // ค้นหา URL รูปภาพ/Google Drive จากคอลัมน์ใดๆ ในแถว
+        let phVal = "-";
+        let nVal = "-";
+        let pVal = "-";
+        let kVal = "-";
         let driveUrl = "";
-        for (let col of row) {
-          if (col && (col.includes("drive.google.com") || col.includes("http://") || col.includes("https://"))) {
-            driveUrl = col.trim();
-            break;
+
+        // หากมี header ช่วยแมปตำแหน่ง
+        if (headerRow) {
+          headerRow.forEach((h, colIdx) => {
+            const hLower = (h || "").toLowerCase();
+            const cellVal = (row[colIdx] || "").trim();
+            if (hLower.includes("ph") || hLower.includes("กรด")) phVal = cellVal;
+            else if (hLower === "n" || hLower.includes("ไนโตรเจน")) nVal = cellVal;
+            else if (hLower === "p" || hLower.includes("ฟอสฟอรัส")) pVal = cellVal;
+            else if (hLower === "k" || hLower.includes("โพแทสเซียม")) kVal = cellVal;
+          });
+        }
+
+        // ค้นหาอัตโนมัติจากค่าในคอลัมน์ F ถึง K (ดัชนี 5 ถึง 10) หากยังไม่ได้ค่า
+        for (let colIdx = 0; colIdx < row.length; colIdx++) {
+          const val = (row[colIdx] || "").trim();
+          if (val.includes("drive.google.com") || val.includes("http://") || val.includes("https://")) {
+            driveUrl = val;
+            continue;
+          }
+
+          // ตรวจจับค่า pH ที่มักเป็นเลขทศนิยมระหว่าง 3.0 ถึง 9.5
+          if (phVal === "-" && !isNaN(val) && parseFloat(val) >= 3.0 && parseFloat(val) <= 10.0) {
+            phVal = val;
+          }
+          // ตรวจจับคำว่า ต่ำ, ปานกลาง, สูง ในส่วนของ N P K
+          if (val.includes("ต่ำ") || val.includes("ปานกลาง") || val.includes("สูง") || val.includes("มาก") || val.includes("น้อย")) {
+            if (nVal === "-") nVal = val;
+            else if (pVal === "-") pVal = val;
+            else if (kVal === "-") kVal = val;
           }
         }
 
@@ -354,6 +421,10 @@
           name,
           area,
           gps,
+          ph: phVal !== "-" ? phVal : (row[5] || "-"),
+          n: nVal !== "-" ? nVal : (row[6] || "-"),
+          p: pVal !== "-" ? pVal : (row[7] || "-"),
+          k: kVal !== "-" ? kVal : (row[8] || "-"),
           imageUrl: driveUrl
         });
       }
@@ -362,81 +433,124 @@
 
     function updateDashboardUI() {
       const total = rawData.length;
-      const uniqueAreas = new Set(rawData.map(d => d.area)).size;
-      const imageCount = rawData.filter(d => d.imageUrl && d.imageUrl.length > 5).length;
-      const latestTime = rawData.length > 0 ? rawData[rawData.length - 1].timestamp : "--";
+      document.getElementById("badge-chart-count").textContent = `รวม ${total} แปลง`;
 
-      document.getElementById("stat-total").textContent = total.toLocaleString() + " คน";
-      document.getElementById("stat-areas").textContent = uniqueAreas.toLocaleString() + " จุด";
-      document.getElementById("stat-images").textContent = imageCount.toLocaleString() + " รายการ";
-      document.getElementById("stat-latest-time").textContent = latestTime.split(" ")[0] || latestTime;
-      document.getElementById("badge-chart-count").textContent = `รวม ${total} รายการ`;
+      // คำนวณค่าเฉลี่ย pH
+      const phList = rawData.map(d => parseFloat(d.ph)).filter(v => !isNaN(v) && v > 0);
+      if (phList.length > 0) {
+        const avgPh = (phList.reduce((a, b) => a + b, 0) / phList.length).toFixed(1);
+        document.getElementById("stat-ph").textContent = avgPh;
+        let phStatus = "กรดปานกลาง";
+        if (avgPh >= 5.5 && avgPh <= 6.5) phStatus = "เหมาะสมต่อพืช";
+        else if (avgPh > 6.5 && avgPh <= 7.5) phStatus = "เป็นกลาง";
+        else if (avgPh > 7.5) phStatus = "ดินด่าง";
+        else if (avgPh < 5.5) phStatus = "ดินกรดจัด";
+        document.getElementById("stat-ph-status").innerHTML = `<i class="fa-solid fa-vial"></i> เฉลี่ย: ${phStatus}`;
+      } else {
+        document.getElementById("stat-ph").textContent = rawData[0]?.ph || "--";
+      }
+
+      // แสดงค่า N, P, K ของแปลงล่าสุด หรือค่าที่พบ
+      const latest = rawData[rawData.length - 1] || {};
+      document.getElementById("stat-n").textContent = latest.n || "--";
+      document.getElementById("stat-p").textContent = latest.p || "--";
+      document.getElementById("stat-k").textContent = latest.k || "--";
 
       renderCharts();
       renderTable();
     }
 
     function renderCharts() {
-      // Bar Chart: พื้นที่
-      const areaCounts = {};
-      rawData.forEach(d => {
-        // ย่อชื่อตำบลให้สั้นลงเพื่อแสดงบนกราฟ
-        let label = d.area.length > 25 ? d.area.substring(0, 25) + "..." : d.area;
-        areaCounts[label] = (areaCounts[label] || 0) + 1;
+      // Bar Chart: ค่า pH รายแปลง
+      const labels = rawData.map((d, i) => d.name.length > 10 ? d.name.substring(0, 10) + '...' : d.name);
+      const phValues = rawData.map(d => {
+        const v = parseFloat(d.ph);
+        return isNaN(v) ? 0 : v;
       });
 
-      const ctxBar = document.getElementById("barAreaChart").getContext("2d");
+      const ctxBar = document.getElementById("barPhChart").getContext("2d");
       if (barChartInstance) barChartInstance.destroy();
 
       barChartInstance = new Chart(ctxBar, {
         type: 'bar',
         data: {
-          labels: Object.keys(areaCounts),
+          labels: labels,
           datasets: [{
-            label: 'จำนวน (ราย)',
-            data: Object.values(areaCounts),
-            backgroundColor: '#10b981',
+            label: 'ค่า pH ในดิน',
+            data: phValues,
+            backgroundColor: phValues.map(v => (v >= 5.5 && v <= 6.5) ? '#10b981' : (v < 5.5 ? '#f59e0b' : '#3b82f6')),
             borderRadius: 6
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { 
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `pH: ${ctx.raw} (${ctx.raw >= 5.5 && ctx.raw <= 6.5 ? 'เหมาะสม' : ctx.raw < 5.5 ? 'ดินกรด' : 'ดินด่าง'})`
+              }
+            }
+          },
           scales: {
-            y: { beginAtZero: true, ticks: { stepSize: 1 } },
+            y: { min: 0, max: 14, ticks: { stepSize: 2 } },
             x: { ticks: { font: { family: "'Sarabun', sans-serif" } } }
           }
         }
       });
 
-      // Pie Chart: มีรูป vs ไม่มีรูป
-      const hasImg = rawData.filter(d => d.imageUrl && d.imageUrl.length > 5).length;
-      const noImg = rawData.length - hasImg;
+      // Radar / Polar Chart สำหรับ N, P, K Score
+      // แปลงข้อความ (ต่ำ, ปานกลาง, สูง) ให้เป็นระดับคะแนน 1, 2, 3
+      const scoreMap = (val) => {
+        if (!val) return 0;
+        if (val.includes("สูง") || val.includes("มาก")) return 3;
+        if (val.includes("ปานกลาง")) return 2;
+        if (val.includes("ต่ำ") || val.includes("น้อย")) return 1;
+        return 2;
+      };
 
-      const ctxPie = document.getElementById("pieImageChart").getContext("2d");
-      if (pieChartInstance) pieChartInstance.destroy();
+      let sumN = 0, sumP = 0, sumK = 0, count = rawData.length || 1;
+      rawData.forEach(d => {
+        sumN += scoreMap(d.n);
+        sumP += scoreMap(d.p);
+        sumK += scoreMap(d.k);
+      });
 
-      pieChartInstance = new Chart(ctxPie, {
-        type: 'doughnut',
+      const ctxRadar = document.getElementById("npkRadarChart").getContext("2d");
+      if (radarChartInstance) radarChartInstance.destroy();
+
+      radarChartInstance = new Chart(ctxRadar, {
+        type: 'polarArea',
         data: {
-          labels: ['มีรูปภาพแนบ', 'ยังไม่มีรูปภาพ'],
+          labels: ['N (ไนโตรเจน)', 'P (ฟอสฟอรัส)', 'K (โพแทสเซียม)'],
           datasets: [{
-            data: [hasImg, noImg],
-            backgroundColor: ['#10b981', '#cbd5e1'],
-            borderWidth: 2,
-            borderColor: '#ffffff'
+            data: [(sumN / count).toFixed(1), (sumP / count).toFixed(1), (sumK / count).toFixed(1)],
+            backgroundColor: ['rgba(59, 130, 246, 0.7)', 'rgba(16, 185, 129, 0.7)', 'rgba(168, 85, 247, 0.7)'],
+            borderWidth: 1
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: "'Sarabun', sans-serif" } } }
+          scales: {
+            r: { min: 0, max: 3, ticks: { stepSize: 1, display: false } }
           },
-          cutout: '70%'
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { family: "'Sarabun', sans-serif" } } }
+          }
         }
       });
+    }
+
+    // ฟังก์ชันสร้าง Badge สีตามค่าธาตุอาหาร
+    function getNutrientBadge(val, type) {
+      if (!val || val === "-") return `<span class="text-slate-300">-</span>`;
+      let bg = "bg-slate-100 text-slate-600";
+      if (val.includes("สูง") || val.includes("มาก")) bg = "bg-emerald-100 text-emerald-700 font-bold";
+      else if (val.includes("ปานกลาง")) bg = "bg-blue-100 text-blue-700 font-medium";
+      else if (val.includes("ต่ำ") || val.includes("น้อย")) bg = "bg-amber-100 text-amber-700 font-medium";
+      return `<span class="px-2 py-0.5 rounded text-[11px] ${bg}">${val}</span>`;
     }
 
     function renderTable() {
@@ -447,40 +561,51 @@
         return item.name.toLowerCase().includes(q) || 
                item.area.toLowerCase().includes(q) || 
                item.gps.toLowerCase().includes(q) ||
+               item.ph.toLowerCase().includes(q) ||
                item.timestamp.toLowerCase().includes(q);
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>`;
         document.getElementById("record-count").textContent = `แสดง 0 รายการ`;
         return;
       }
 
       tbody.innerHTML = filtered.map((item, idx) => {
         const hasImg = item.imageUrl && item.imageUrl.trim().length > 5;
+        const phNum = parseFloat(item.ph);
+        const phBadgeColor = (!isNaN(phNum) && phNum >= 5.5 && phNum <= 6.5) 
+                             ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                             : "bg-amber-50 text-amber-700 border-amber-200";
+
         return `
           <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-            <td class="py-3 px-4 font-semibold text-slate-400">${idx + 1}</td>
-            <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${item.timestamp}</td>
-            <td class="py-3 px-4 font-bold text-slate-800">${item.name}</td>
-            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-medium text-xs">${item.area}</span></td>
-            <td class="py-3 px-4 text-slate-500 font-mono text-xs">${item.gps}</td>
-            <td class="py-3 px-4 text-center">
+            <td class="py-3 px-3 font-semibold text-slate-400">${idx + 1}</td>
+            <td class="py-3 px-3 text-slate-500 whitespace-nowrap">${item.timestamp}</td>
+            <td class="py-3 px-3 font-bold text-slate-800">${item.name}</td>
+            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium text-xs">${item.area}</span></td>
+            <td class="py-3 px-2 text-center bg-amber-50/30">
+              <span class="px-2 py-0.5 rounded border font-bold text-xs ${phBadgeColor}">${item.ph}</span>
+            </td>
+            <td class="py-3 px-2 text-center bg-blue-50/30">${getNutrientBadge(item.n, 'N')}</td>
+            <td class="py-3 px-2 text-center bg-emerald-50/30">${getNutrientBadge(item.p, 'P')}</td>
+            <td class="py-3 px-2 text-center bg-purple-50/30">${getNutrientBadge(item.k, 'K')}</td>
+            <td class="py-3 px-3 text-center">
               <button onclick="openModal(${item.id})" 
-                      class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 mx-auto transition shadow-sm ${
+                      class="px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 mx-auto transition shadow-xs ${
                         hasImg 
                         ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
                         : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                       }">
-                <i class="fa-solid ${hasImg ? 'fa-image' : 'fa-circle-info'}"></i>
-                <span>${hasImg ? 'ดูรูปการวิเคราะห์' : 'ดูรายละเอียด'}</span>
+                <i class="fa-solid ${hasImg ? 'fa-image' : 'fa-flask'}"></i>
+                <span>${hasImg ? 'ดูรูปการวิเคราะห์' : 'ผลตรวจ'}</span>
               </button>
             </td>
           </tr>
         `;
       }).join('');
 
-      document.getElementById("record-count").textContent = `แสดง ${filtered.length} จากทั้งหมด ${rawData.length} รายการ`;
+      document.getElementById("record-count").textContent = `แสดง ${filtered.length} จากทั้งหมด ${rawData.length} แปลง`;
     }
 
     function openModal(id) {
@@ -488,8 +613,14 @@
       if (!item) return;
 
       document.getElementById("modalName").textContent = item.name;
-      document.getElementById("modalArea").textContent = `ที่ตั้งแปลง: ${item.area} (GPS: ${item.gps})`;
+      document.getElementById("modalArea").textContent = `ที่ตั้งแปลง: ${item.area} (พิกัด: ${item.gps})`;
       document.getElementById("modalTimestamp").textContent = `ส่งเมื่อ: ${item.timestamp}`;
+
+      // เติมค่า pH, N, P, K ใน Modal
+      document.getElementById("modalValPh").textContent = item.ph || "-";
+      document.getElementById("modalValN").textContent = item.n || "-";
+      document.getElementById("modalValP").textContent = item.p || "-";
+      document.getElementById("modalValK").textContent = item.k || "-";
 
       const modalImg = document.getElementById("modalImg");
       const modalFallback = document.getElementById("modalFallback");
@@ -528,7 +659,7 @@
 
     function showEmpty() {
       document.getElementById("surveyTableBody").innerHTML = `
-        <tr><td colspan="6" class="text-center py-8 text-slate-400">ยังไม่มีข้อมูลใน Google Sheets</td></tr>
+        <tr><td colspan="9" class="text-center py-8 text-slate-400">ยังไม่มีข้อมูลใน Google Sheets</td></tr>
       `;
     }
 
