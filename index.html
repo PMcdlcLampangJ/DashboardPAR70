@@ -3,883 +3,428 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PAR 70 Real-Time Dashboard | ศูนย์ศึกษาและพัฒนาชุมชนลำปาง</title>
+  <title>PAR 70 Real-Time Dashboard | CDL Lampang</title>
   
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS & Font Awesome & Chart.js & PapaParse -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts: Prompt & Sarabun for Thai UI elegance -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- PapaParse for robust CSV loading -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  
-  <!-- Chart.js -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Prompt', 'Sarabun', 'sans-serif'],
-            body: ['Sarabun', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#ecfdf5',
-              100: '#d1fae5',
-              500: '#10b981',
-              600: '#059669',
-              700: '#047857',
-              800: '#065f46',
-              900: '#064e3b',
-            },
-            accent: {
-              50: '#eef2ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
   <style>
-    body {
-      font-family: 'Prompt', 'Sarabun', sans-serif;
-      background-color: #f8fafc;
-      color: #1e293b;
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
+    body { font-family: 'Sarabun', sans-serif; }
     .glass-card {
       background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-    }
-    @keyframes pulse-subtle {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    .animate-pulse-subtle {
-      animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(229, 231, 235, 0.8);
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- Header & Navigation -->
-  <header class="bg-gradient-to-r from-emerald-800 via-teal-800 to-indigo-900 text-white shadow-xl sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        
-        <!-- Logo / Title -->
-        <div class="flex items-center space-x-3.5">
-          <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-emerald-300 shadow-inner">
-            <i class="fa-solid fa-chart-pie text-2xl"></i>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">PAR-70 LIVE</span>
-              <span id="liveStatusBadge" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-400/20 text-emerald-200">
-                <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                พร้อมเชื่อมต่อข้อมูลสด
-              </span>
-            </div>
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
-              ศูนย์ศึกษาและพัฒนาชุมชนลำปาง (CDL Lampang)
-            </h1>
-            <p class="text-xs text-emerald-150/80 font-light">
-              ระบบแดชบอร์ดติดตามข้อมูลแบบสำรวจการวิจัยเชิงปฏิบัติการแบบมีส่วนร่วม (PAR)
-            </p>
-          </div>
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center border border-white/20 text-emerald-300 text-xl sm:text-2xl shadow-inner">
+          <i class="fa-solid fa-seedling"></i>
         </div>
-
-        <!-- Action Tools & Status -->
-        <div class="flex flex-wrap items-center gap-2.5">
-          <a href="https://pmcdlclampangj.github.io/PAR70/" target="_blank" rel="noopener noreferrer" 
-             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs text-white transition border border-white/15 backdrop-blur shadow-sm">
-            <i class="fa-solid fa-square-arrow-up-right"></i>
-            <span>เปิดแบบสำรวจ PAR70</span>
-          </a>
-
-          <button id="refreshBtn" onclick="fetchLiveSurveyData()" 
-                  class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-medium text-xs shadow-md shadow-emerald-900/30 transition border border-emerald-400/30">
-            <i id="refreshIcon" class="fa-solid fa-arrows-rotate"></i>
-            <span id="refreshLabel">รีเฟรชข้อมูล</span>
-          </button>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-500/30 text-emerald-200 border border-emerald-400/30">PAR-70 LIVE</span>
+            <span id="conn-badge" class="px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-200 border border-amber-400/30">
+              <i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังเชื่อมต่อชีต...
+            </span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight">ศูนย์ศึกษาและพัฒนาชุมชนลำปาง (CDL Lampang)</h1>
+          <p class="text-xs text-emerald-100/80">ระบบแดชบอร์ดติดตามข้อมูลแบบสำรวจการวิจัยเชิงปฏิบัติการแบบมีส่วนร่วม (PAR)</p>
         </div>
+      </div>
 
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="https://pmcdlclampangj.github.io/PAR70/" target="_blank" 
+           class="px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5 border border-white/20 shadow-sm">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดแบบสำรวจ PAR70
+        </a>
+        <button id="btn-refresh" onclick="loadSheetData(true)" 
+                class="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5 shadow-md active:scale-95">
+          <i id="refresh-icon" class="fa-solid fa-rotate"></i> รีเฟรชข้อมูล
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- Notification Banner / Sheet Notice -->
-  <div class="bg-emerald-900/10 border-b border-emerald-500/15 py-2 px-4 text-xs text-slate-600">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-      <div class="flex items-center gap-2 text-slate-700">
-        <i class="fa-solid fa-cloud-arrow-down text-emerald-600"></i>
-        <span>ดึงข้อมูลสดจาก Google Sheets: <strong class="text-emerald-800">PAR-70 Response Sheet</strong></span>
-        <span class="hidden md:inline text-slate-300">|</span>
-        <span class="text-slate-500 hidden md:inline">อัปเดตอัตโนมัติทุก 30 วินาที</span>
-      </div>
-      <div class="text-slate-500 flex items-center gap-2">
-        <span>อัปเดตล่าสุด:</span>
-        <span id="lastUpdatedTime" class="font-semibold text-slate-700">กำลังโหลด...</span>
-      </div>
+  <!-- Sub-bar Info -->
+  <div class="bg-white border-b border-slate-200 py-2 px-4 sm:px-8 text-xs text-slate-500 flex flex-wrap justify-between items-center gap-2 shadow-xs">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-table-cells text-emerald-600"></i>
+      <span>ดึงข้อมูลสดจาก Google Sheets: <span class="font-semibold text-slate-700">PAR-70 Response Sheet</span></span>
+      <span class="hidden sm:inline text-slate-300">|</span>
+      <span class="hidden sm:inline text-emerald-600"><i class="fa-solid fa-arrows-rotate mr-1"></i>อัปเดตอัตโนมัติทุก 30 วินาที</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span>อัปเดตล่าสุด:</span>
+      <span id="last-updated" class="font-semibold text-slate-700">กำลังโหลด...</span>
     </div>
   </div>
 
-  <!-- Main Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
 
-    <!-- KPI Metric Cards Grid -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      
-      <!-- Total Responses -->
-      <div class="glass-card rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex items-center justify-between relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
-        <div>
-          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">ผู้ตอบแบบสำรวจทั้งหมด</p>
-          <div class="flex items-baseline gap-2 mt-1">
-            <h3 id="kpiTotalCount" class="text-3xl font-bold text-slate-800">--</h3>
-            <span class="text-xs text-emerald-600 font-medium">ชุดข้อมูล</span>
-          </div>
-          <p class="text-[11px] text-slate-400 mt-1">บันทึกผ่านระบบเรียลไทม์</p>
-        </div>
-        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shadow-inner">
-          <i class="fa-solid fa-users"></i>
-        </div>
-      </div>
-
-      <!-- Identified Area / Provinces -->
-      <div class="glass-card rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex items-center justify-between relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl pointer-events-none"></div>
-        <div>
-          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">กลุ่มพื้นที่ / พิกัดที่ร่วมสำรวจ</p>
-          <div class="flex items-baseline gap-2 mt-1">
-            <h3 id="kpiProvincesCount" class="text-3xl font-bold text-indigo-700">--</h3>
-            <span class="text-xs text-indigo-600 font-medium">พื้นที่</span>
-          </div>
-          <p class="text-[11px] text-slate-400 mt-1">ครอบคลุมชุมชนเป้าหมาย</p>
-        </div>
-        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl shadow-inner">
-          <i class="fa-solid fa-map-location-dot"></i>
-        </div>
-      </div>
-
-      <!-- Photos & Analyses Uploaded -->
-      <div class="glass-card rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex items-center justify-between relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/10 rounded-full blur-xl pointer-events-none"></div>
-        <div>
-          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">เอกสาร / รูปผลการวิเคราะห์</p>
-          <div class="flex items-baseline gap-2 mt-1">
-            <h3 id="kpiAnalysisWithImages" class="text-3xl font-bold text-amber-600">--</h3>
-            <span class="text-xs text-amber-600 font-medium">รายการ</span>
-          </div>
-          <p class="text-[11px] text-slate-400 mt-1">พร้อมเปิดตรวจผลงานวิเคราะห์</p>
-        </div>
-        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shadow-inner">
-          <i class="fa-solid fa-file-shield"></i>
-        </div>
-      </div>
-
-      <!-- Latest Entry Time -->
-      <div class="glass-card rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex items-center justify-between relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-teal-500/10 rounded-full blur-xl pointer-events-none"></div>
-        <div>
-          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">ข้อมูลส่งเข้ามาล่าสุด</p>
-          <div class="flex items-baseline gap-2 mt-1">
-            <h3 id="kpiLatestTimestamp" class="text-base font-semibold text-slate-800 truncate max-w-[150px]">--</h3>
-          </div>
-          <p id="kpiLatestAgo" class="text-[11px] text-teal-600 mt-1 font-medium">พร้อมรับข้อมูลใหม่ต่อเนื่อง</p>
-        </div>
-        <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shadow-inner">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- Visual Analytics / Charts Section -->
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
-      <!-- Chart 1: Group / Province Distribution -->
-      <div class="glass-card rounded-2xl p-5 border border-slate-200/80 shadow-sm lg:col-span-2 flex flex-col justify-between">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
+    <!-- KPI Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-emerald-500 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-              <i class="fa-solid fa-chart-column text-emerald-600"></i>
-              สัดส่วนและจำนวนการส่งแบบสำรวจจำแนกตามพื้นที่/กลุ่มเป้าหมาย
-            </h2>
-            <p class="text-xs text-slate-500">วิเคราะห์ตามหน่วยงานหรือพื้นที่ที่ระบุในแบบสำรวจ PAR</p>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ผู้ตอบแบบสำรวจทั้งหมด</p>
+            <h3 id="stat-total" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+            <p class="text-xs text-emerald-600 mt-1 font-medium"><i class="fa-solid fa-check-circle"></i> บันทึกผ่านระบบเรียลไทม์</p>
           </div>
-          <span id="chartTotalBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-medium">รวม 0 คน</span>
+          <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+            <i class="fa-solid fa-users"></i>
+          </div>
         </div>
-        <div class="relative h-64 sm:h-72 w-full">
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-indigo-500 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">กลุ่มพื้นที่ / พิกัดที่ร่วมสำรวจ</p>
+            <h3 id="stat-areas" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+            <p class="text-xs text-indigo-600 mt-1 font-medium"><i class="fa-solid fa-location-dot"></i> ครอบคลุมชุมชนเป้าหมาย</p>
+          </div>
+          <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
+            <i class="fa-solid fa-map-location-dot"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-amber-500 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">เอกสาร / รูปผลการวิเคราะห์</p>
+            <h3 id="stat-images" class="text-3xl font-extrabold text-slate-800 mt-1">--</h3>
+            <p class="text-xs text-amber-600 mt-1 font-medium"><i class="fa-solid fa-images"></i> พร้อมเปิดตรวจผลงานวิเคราะห์</p>
+          </div>
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+            <i class="fa-solid fa-file-image"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 shadow-sm border-l-4 border-teal-500 hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">ข้อมูลส่งเข้ามาล่าสุด</p>
+            <h3 id="stat-latest-time" class="text-lg font-bold text-slate-800 mt-2 truncate max-w-[150px]">--</h3>
+            <p class="text-xs text-teal-600 mt-1 font-medium"><i class="fa-solid fa-clock-rotate-left"></i> พร้อมรับข้อมูลใหม่อย่างต่อเนื่อง</p>
+          </div>
+          <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-xl">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2 glass-card rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h4 class="font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-chart-column text-emerald-600"></i> สัดส่วนและจำนวนการส่งแบบสำรวจจำแนกตามพื้นที่/กลุ่มเป้าหมาย
+            </h4>
+            <p class="text-xs text-slate-400">วิเคราะห์ตามหน่วยงานหรือพื้นที่ระบุในแบบสำรวจ PAR</p>
+          </div>
+          <span id="badge-chart-count" class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-semibold">0 คน</span>
+        </div>
+        <div class="h-64 relative">
           <canvas id="barAreaChart"></canvas>
         </div>
       </div>
 
-      <!-- Chart 2: Metric Distribution / Target Radar or Donut -->
-      <div class="glass-card rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between">
-        <div class="mb-4">
-          <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
-            <i class="fa-solid fa-chart-pie text-indigo-600"></i>
-            สัดส่วนการมีรูปผลการวิเคราะห์
-          </h2>
-          <p class="text-xs text-slate-500">สถานะแนบผลวิเคราะห์รายบุคคล / เอกสารแนบ</p>
+      <div class="glass-card rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+        <div class="mb-2">
+          <h4 class="font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-indigo-600"></i> สัดส่วนการมีรูปผลการวิเคราะห์
+          </h4>
+          <p class="text-xs text-slate-400">สถานะแนบผลวิเคราะห์รายบุคคล / เอกสารแนบ</p>
         </div>
-        <div class="relative h-64 sm:h-72 w-full flex items-center justify-center">
-          <canvas id="donutStatusChart"></canvas>
+        <div class="h-56 relative flex items-center justify-center">
+          <canvas id="pieImageChart"></canvas>
+        </div>
+        <div class="pt-2 border-t border-slate-100 flex justify-around text-xs text-slate-500">
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> แนบรูป/ผลงาน</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-slate-300 inline-block"></span> ยังไม่แนบ</span>
         </div>
       </div>
+    </div>
 
-    </section>
-
-    <!-- Respondent Table / Records Section -->
-    <section class="glass-card rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-      
-      <!-- Table Header & Filters -->
-      <div class="p-5 border-b border-slate-200/70 bg-white/50 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-              <i class="fa-solid fa-table-list text-emerald-600"></i>
-              รายชื่อผู้ตอบแบบสำรวจ และผลการวิเคราะห์รายบุคคล
-            </h2>
-            <p class="text-xs text-slate-500">สามารถค้นหา คัดกรอง และกดดูรูปผลงานการประเมินวิเคราะห์ PAR ได้ทันที</p>
-          </div>
-
-          <!-- Counter Badge -->
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-500">แสดงผล:</span>
-            <span id="recordsCountBadge" class="text-xs font-semibold px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-lg">0 รายการ</span>
-          </div>
+    <!-- Data Table & Search -->
+    <div class="glass-card rounded-2xl shadow-sm overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-white">
+        <div>
+          <h4 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+            <i class="fa-solid fa-list-check text-emerald-600"></i> รายชื่อผู้ตอบแบบสำรวจ และผลการวิเคราะห์รายบุคคล
+          </h4>
+          <p class="text-xs text-slate-400">คลิกที่ปุ่ม <span class="font-semibold text-emerald-600">"ดูรูปการวิเคราะห์"</span> เพื่อดูรายละเอียดผลงานหรือไฟล์ที่แนบมา</p>
         </div>
-
-        <!-- Search and Filter Inputs -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div class="relative sm:col-span-2">
-            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input type="text" id="searchInput" oninput="applyFilters()" 
-                   placeholder="ค้นหาชื่อ-สกุล, ตำบล/อำเภอ/จังหวัด, หรือคีย์เวิร์ด..." 
-                   class="w-full pl-10 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
-          </div>
-          <div>
-            <select id="filterArea" onchange="applyFilters()" 
-                    class="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
-              <option value="">ทุกพื้นที่ / ทุกกลุ่ม</option>
-            </select>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <div class="relative w-full sm:w-64">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+            <input type="text" id="searchInput" oninput="renderTable()" placeholder="ค้นหาชื่อ, พื้นที่, หรือข้อมูล..." 
+                   class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
           </div>
         </div>
       </div>
 
-      <!-- Table Body -->
-      <div class="overflow-x-auto custom-scrollbar">
-        <table class="w-full text-left text-sm text-slate-600">
-          <thead class="bg-slate-50/80 text-xs font-semibold uppercase text-slate-500 border-b border-slate-200">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-600 border-collapse">
+          <thead class="bg-slate-100/80 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200">
             <tr>
-              <th scope="col" class="py-3 px-4 w-12 text-center">#</th>
-              <th scope="col" class="py-3 px-4">วัน-เวลาที่ส่ง</th>
-              <th scope="col" class="py-3 px-4">ชื่อ - นามสกุล / ผู้ตอบแบบสอบถาม</th>
-              <th scope="col" class="py-3 px-4">พื้นที่ / สังกัด / กลุ่มเป้าหมาย</th>
-              <th scope="col" class="py-3 px-4">คะแนน / ข้อมูลสำคัญ</th>
-              <th scope="col" class="py-3 px-4 text-center">รูปผลการวิเคราะห์</th>
+              <th class="py-3 px-4">#</th>
+              <th class="py-3 px-4">วัน-เวลาที่ส่ง</th>
+              <th class="py-3 px-4">ชื่อ - นามสกุล / ผู้ให้ข้อมูล</th>
+              <th class="py-3 px-4">พื้นที่ / สังกัด / อำเภอ</th>
+              <th class="py-3 px-4">ประเด็นการวิเคราะห์</th>
+              <th class="py-3 px-4 text-center">รูปผลการวิเคราะห์</th>
             </tr>
           </thead>
-          <tbody id="tableBody" class="divide-y divide-slate-100 font-body text-xs sm:text-sm">
-            <!-- Dynamic Rows will be rendered here -->
+          <tbody id="surveyTableBody" class="divide-y divide-slate-100">
             <tr>
-              <td colspan="6" class="text-center py-12 text-slate-400">
-                <div class="inline-flex flex-col items-center gap-2">
-                  <i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-600"></i>
-                  <span>กำลังเชื่อมต่อฐานข้อมูล Google Sheets...</span>
-                </div>
+              <td colspan="6" class="text-center py-10 text-slate-400">
+                <i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-500 mb-2"></i>
+                <p>กำลังดาวน์โหลดและประมวลผลข้อมูลชีต...</p>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
-      <!-- Pagination or Empty Notice -->
-      <div id="tableFooter" class="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-        <span id="pageInfo">แสดงรายการตามผลการค้นหา</span>
-        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-emerald-700 hover:text-emerald-800 font-medium flex items-center gap-1">
-          <i class="fa-solid fa-arrow-up"></i> เลื่อนขึ้นด้านบน
-        </button>
+      <div id="tablePagination" class="p-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex justify-between items-center">
+        <span id="record-count">แสดง 0 รายการ</span>
       </div>
-
-    </section>
+    </div>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="mt-auto border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <p>ศูนย์ศึกษาและพัฒนาชุมชนลำปาง (CDL Lampang) &copy; <span id="currentYear"></span> โครงการวิจัยเชิงปฏิบัติการแบบมีส่วนร่วม (PAR)</p>
-      <div class="flex items-center space-x-3">
-        <a href="https://pmcdlclampangj.github.io/PAR70/" target="_blank" class="hover:text-emerald-700 underline underline-offset-2">ลิงก์แบบสำรวจหลัก</a>
-        <span>•</span>
-        <span class="text-emerald-600 font-semibold flex items-center gap-1">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live Connected
-        </span>
+  <!-- Modal ดูรูปผลการวิเคราะห์ -->
+  <div id="imageModal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-fade-in">
+      <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <div>
+          <h3 id="modalName" class="font-bold text-slate-800 text-base">รูปผลการวิเคราะห์</h3>
+          <p id="modalArea" class="text-xs text-emerald-600 font-medium">สังกัด / ชุมชน</p>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto flex-1 flex flex-col items-center justify-center bg-slate-100/50 min-h-[300px]">
+        <div id="modalLoading" class="text-center py-8">
+          <i class="fa-solid fa-spinner fa-spin text-3xl text-emerald-600 mb-2"></i>
+          <p class="text-xs text-slate-500">กำลังโหลดรูปภาพผลการวิเคราะห์...</p>
+        </div>
+        <img id="modalImg" src="" alt="รูปผลการวิเคราะห์" class="max-h-[60vh] max-w-full rounded-xl shadow-md hidden object-contain">
+        <div id="modalFallback" class="hidden text-center py-8 px-4">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+            <i class="fa-solid fa-chart-radar"></i>
+          </div>
+          <h4 class="font-bold text-slate-700 mb-1">ผลการวิเคราะห์ข้อมูล PAR</h4>
+          <p class="text-xs text-slate-500 max-w-md mx-auto mb-3" id="modalTopic">บันทึกข้อมูลแล้วเรียบร้อย ยังไม่ได้แนบไฟล์รูปภาพภาพถ่าย</p>
+          <a id="modalExternalBtn" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 shadow-sm transition">
+            <i class="fa-solid fa-external-link"></i> เปิดดูเอกสารแนบต้นฉบับ
+          </a>
+        </div>
+      </div>
+
+      <div class="p-3 border-t border-slate-100 bg-white flex justify-between items-center text-xs text-slate-500">
+        <span id="modalTimestamp">ส่งเมื่อ: --</span>
+        <button onclick="closeModal()" class="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-lg font-medium text-slate-700 transition">ปิดหน้าต่าง</button>
       </div>
     </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+    ศูนย์ศึกษาและพัฒนาชุมชนลำปาง (CDL Lampang) | กรมการพัฒนาชุมชน กระทรวงมหาดไทย
   </footer>
 
-  <!-- Modal: View Analysis Image / Visual Card -->
-  <div id="analysisModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
-      
-      <!-- Modal Header -->
-      <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-4 sm:p-5 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-emerald-300">
-            <i class="fa-solid fa-chart-line text-lg"></i>
-          </div>
-          <div>
-            <h3 id="modalName" class="text-base sm:text-lg font-bold">ข้อมูลการวิเคราะห์ PAR</h3>
-            <p id="modalSubtitle" class="text-xs text-emerald-100/80">ศูนย์ศึกษาและพัฒนาชุมชนลำปาง</p>
-          </div>
-        </div>
-        <button onclick="closeAnalysisModal()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-5 sm:p-6 overflow-y-auto space-y-5 custom-scrollbar text-slate-700">
-        
-        <!-- Info Badges -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <span class="text-slate-400 block mb-0.5">วันที่ประเมิน:</span>
-            <span id="modalDate" class="font-medium text-slate-800">--</span>
-          </div>
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <span class="text-slate-400 block mb-0.5">พื้นที่/ชุมชน:</span>
-            <span id="modalLocation" class="font-medium text-slate-800">--</span>
-          </div>
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 col-span-2 sm:col-span-1">
-            <span class="text-slate-400 block mb-0.5">สถานะเอกสาร:</span>
-            <span id="modalStatus" class="font-medium text-emerald-600">วิเคราะห์แล้ว</span>
-          </div>
-        </div>
-
-        <!-- Dynamic Visual Display: Image OR Canvas Radar Graphic -->
-        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 flex flex-col items-center justify-center min-h-[260px] text-center relative">
-          
-          <!-- Image Container (shown if respondent has actual image link) -->
-          <div id="modalImageContainer" class="hidden w-full flex-col items-center">
-            <img id="modalAnalysisImage" src="" alt="ภาพผลการวิเคราะห์" 
-                 class="max-h-80 w-auto rounded-xl object-contain shadow-md border border-slate-200 transition-all hover:scale-[1.02] cursor-pointer"
-                 onclick="window.open(this.src, '_blank')">
-            <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
-              <i class="fa-solid fa-arrow-up-right-from-square"></i> คลิกที่รูปเพื่อดูภาพขนาดเต็มในหน้าต่างใหม่
-            </p>
-          </div>
-
-          <!-- Generated Radar Graph Container (shown if respondent has numeric indicators or standard survey breakdown) -->
-          <div id="modalGeneratedChartContainer" class="w-full flex flex-col items-center">
-            <p class="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1">
-              <i class="fa-solid fa-radar text-emerald-600"></i> แผนภาพการประเมินสมรรถนะ / คะแนนการมีส่วนร่วม (PAR Spider Chart)
-            </p>
-            <div class="w-full max-w-sm h-64">
-              <canvas id="modalRadarChart"></canvas>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-1">ประมวลผลจากคำตอบในแบบสำรวจเชิงปฏิบัติการ</p>
-          </div>
-
-        </div>
-
-        <!-- Full Responses Details Accordion / List -->
-        <div>
-          <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">รายละเอียดข้อคิดเห็นและการประเมินเพิ่มเติม</h4>
-          <div id="modalDetailedAnswers" class="space-y-2 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-100 max-h-48 overflow-y-auto custom-scrollbar">
-            <!-- Rendered Answer List -->
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="bg-slate-50 px-5 py-3.5 border-t border-slate-200 flex items-center justify-between">
-        <a id="modalExternalLink" href="#" target="_blank" class="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5 hidden">
-          <i class="fa-solid fa-external-link-alt"></i> เปิดไฟล์ต้นฉบับใน Drive / Link
-        </a>
-        <button onclick="closeAnalysisModal()" class="ml-auto px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium transition">
-          ปิดหน้าต่าง
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Toast Notification Message -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-800 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
-    <span id="toastMsg" class="text-xs font-medium">ข้อความแจ้งเตือน</span>
-  </div>
-
-  <!-- Application Logic -->
   <script>
-    // Live Published CSV Endpoint
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTn5ONVvtwfif6i5VEMLcba5H37sU72lGO_lSjDahLY32Z79bYyhe4KzJoi0D517quhPwVXOIuONIm4/pub?gid=0&single=true&output=csv";
+    // URL ชีตแบบ CSV จาก Google Sheets
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTn5ONVvtwfif6i5VEMLcba5H37sU72lGO_lSjDahLY32Z79bYyhe4KzJoi0D517quhPwVXOIuONIm4/pub?gid=0&single=true&output=csv";
 
-    // Application State
-    let rawSurveyData = [];
-    let parsedColumns = [];
-    let filteredData = [];
+    let rawData = [];
     let barChartInstance = null;
-    let donutChartInstance = null;
-    let modalRadarChartInstance = null;
-    let autoRefreshTimer = null;
+    let pieChartInstance = null;
 
-    // Identified standard column keywords
-    let colIndexMap = {
-      timestamp: -1,
-      name: -1,
-      location: -1,
-      imageOrLink: -1,
-      scores: []
-    };
-
-    // Initialize on page load
-    window.onload = function() {
-      document.getElementById('currentYear').textContent = new Date().getFullYear() + 543;
-      fetchLiveSurveyData();
-      
-      // Auto-refresh interval (every 35 seconds)
-      autoRefreshTimer = setInterval(() => {
-        fetchLiveSurveyData(true);
-      }, 35000);
-    };
-
-    // Show Toast
-    function showToast(message, isSuccess = true) {
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toastMsg');
-      const toastIcon = document.getElementById('toastIcon');
-
-      toastMsg.textContent = message;
-      toastIcon.className = isSuccess ? 'fa-solid fa-circle-check text-emerald-400 text-base' : 'fa-solid fa-triangle-exclamation text-amber-400 text-base';
-      
-      toast.classList.remove('opacity-0', 'pointer-events-none');
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'pointer-events-none');
-      }, 3500);
+    // ฟังก์ชันแปลง URL Google Drive ให้ออกมาเป็น Direct Image Link
+    function formatDriveImageUrl(url) {
+      if (!url) return "";
+      url = url.trim();
+      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+      }
+      return url;
     }
 
-    // Fetch and parse Live CSV data
-    async function fetchLiveSurveyData(isSilent = false) {
-      const refreshBtn = document.getElementById('refreshBtn');
-      const refreshIcon = document.getElementById('refreshIcon');
-      const refreshLabel = document.getElementById('refreshLabel');
-
-      if (!isSilent) {
-        refreshIcon.classList.add('fa-spin');
-        refreshLabel.textContent = 'กำลังโหลด...';
+    // ฟังก์ชันดึง CSV พร้อมระบบ Auto-Fallback แก้ปัญหา CORS
+    async function fetchCSVWithFallback() {
+      const cacheBustUrl = SHEET_CSV_URL + "&t=" + new Date().getTime();
+      try {
+        const res = await fetch(cacheBustUrl);
+        if (!res.ok) throw new Error("Direct fetch status: " + res.status);
+        return await res.text();
+      } catch (err) {
+        console.warn("Direct fetch failed, trying CORS proxy fallback...", err);
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(cacheBustUrl)}`;
+        const proxyRes = await fetch(proxyUrl);
+        if (!proxyRes.ok) throw new Error("Proxy fetch failed");
+        return await proxyRes.text();
       }
+    }
 
-      // Add cache buster to bypass browser cache
-      const cacheBusterUrl = CSV_URL + (CSV_URL.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+    async function loadSheetData(isManual = false) {
+      const badge = document.getElementById("conn-badge");
+      const icon = document.getElementById("refresh-icon");
+      if (icon) icon.classList.add("fa-spin");
 
       try {
-        Papa.parse(cacheBusterUrl, {
-          download: true,
+        const csvText = await fetchCSVWithFallback();
+        
+        Papa.parse(csvText, {
           header: true,
-          skipEmptyLines: 'greedy',
+          skipEmptyLines: true,
           complete: function(results) {
-            handleParsedData(results);
-            if (!isSilent) {
-              showToast('อัปเดตข้อมูลแบบสำรวจล่าสุดสำเร็จ', true);
+            if (results.data && results.data.length > 0) {
+              // ทำความสะอาดและตรวจจับ Header
+              rawData = processRows(results.data);
+              updateDashboardUI();
+              badge.className = "px-2 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30";
+              badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> เชื่อมต่อสด (${rawData.length} แถว)`;
+            } else {
+              showEmpty();
             }
           },
           error: function(err) {
-            console.warn('Error reading live CSV, using fallback template:', err);
-            loadFallbackOrCachedData();
-            if (!isSilent) {
-              showToast('ไม่สามารถเชื่อมต่อไฟล์สดได้ ใช้ข้อมูลจำลอง/ล่าสุด', false);
-            }
+            console.error("PapaParse error:", err);
+            badge.className = "px-2 py-0.5 text-xs rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/30";
+            badge.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i> อ่านข้อมูลผิดพลาด`;
           }
         });
-      } catch (err) {
-        console.error('Fetch exception:', err);
-        loadFallbackOrCachedData();
+      } catch (error) {
+        console.error("Fetch CSV error:", error);
+        badge.className = "px-2 py-0.5 text-xs rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/30";
+        badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> เชื่อมต่อไม่สำเร็จ`;
       } finally {
-        if (!isSilent) {
-          setTimeout(() => {
-            refreshIcon.classList.remove('fa-spin');
-            refreshLabel.textContent = 'รีเฟรชข้อมูล';
-          }, 600);
-        }
+        if (icon) icon.classList.remove("fa-spin");
+        document.getElementById("last-updated").textContent = new Date().toLocaleTimeString('th-TH');
       }
     }
 
-    // Fallback Mock Data in case Google Sheet is offline or has restricted CORS
-    function loadFallbackOrCachedData() {
-      const mockCsv = `ประทับเวลา,ชื่อ - สกุล,หน่วยงาน / พื้นที่ / ชุมชน,บทบาทในการทำวิจัย PAR,ระดับการมีส่วนร่วม,ระดับความพึงพอใจ,ลิงก์รูปผลการวิเคราะห์/ผลงาน,ข้อเสนอแนะเพื่อการพัฒนา
-2026/02/10 09:15:22,นายสมชาย วงศ์สว่าง,ชุมชนบ้านสบปราบ จ.ลำปาง,ผู้นำชุมชน / แกนนำ,5,5,https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80,ต้องการให้จัดกระบวนการแลกเปลี่ยนต่อเนื่องทุกเดือน
-2026/02/10 10:40:15,นางสาวกานดา มณีโชติ,ต.ปงเตา อ.งาว จ.ลำปาง,นักวิจัยชุมชน,4,5,https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=800&q=80,เครื่องมือ PAR ช่วยให้ชาวบ้านระบุปัญหาได้ตรงจุด
-2026/02/10 11:25:01,นายสุรชัย ใจซื่อ,กลุ่มวิสาหกิจชุมชนแจ้ซ้อน จ.ลำปาง,คณะทำงานภาคประชาชน,5,4,,ควรเพิ่มการสนับสนุนงบประมาณต่อยอดโครงการ
-2026/02/10 13:12:44,นางพรพิมล ศรีสวัสดิ์,เทศบาลตำบลเกาะคา จ.ลำปาง,เจ้าหน้าที่ อปท.,4,4,https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80,กระบวนการประเมินผลชัดเจนและเห็นภาพรวม
-2026/02/10 14:05:30,นายประดิษฐ์ คำตัน,อ.เมือง จ.ลำปาง,ปราชญ์ชาวบ้าน,5,5,,ยอดเยี่ยมมาก เป็นประโยชน์ต่อชุมชน`;
-      
-      Papa.parse(mockCsv, {
-        header: true,
-        skipEmptyLines: 'greedy',
-        complete: function(results) {
-          handleParsedData(results);
-        }
-      });
-    }
-
-    // Process parsed CSV items
-    function handleParsedData(results) {
-      if (!results || !results.data || results.data.length === 0) {
-        renderEmptyState();
-        return;
-      }
-
-      rawSurveyData = results.data;
-      parsedColumns = results.meta && results.meta.fields ? results.meta.fields : Object.keys(rawSurveyData[0] || {});
-
-      // Map dynamic columns based on keyword heuristics
-      detectKeyColumns();
-
-      // Update timestamp indicator
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' น.';
-      document.getElementById('lastUpdatedTime').textContent = timeStr;
-
-      // Populate filter dropdown
-      populateAreaDropdown();
-
-      // Render KPIs
-      updateKPIs();
-
-      // Apply Filter & Render Table
-      applyFilters();
-
-      // Update Charts
-      renderCharts();
-    }
-
-    // Heuristically detect column purposes
-    function detectKeyColumns() {
-      colIndexMap = {
-        timestamp: '',
-        name: '',
-        location: '',
-        imageOrLink: '',
-        scores: []
-      };
-
-      parsedColumns.forEach(col => {
-        const lower = col.toLowerCase().trim();
-        // Timestamp
-        if (!colIndexMap.timestamp && (lower.includes('ประทับเวลา') || lower.includes('timestamp') || lower.includes('เวลา') || lower.includes('date'))) {
-          colIndexMap.timestamp = col;
-        }
-        // Name
-        else if (!colIndexMap.name && (lower.includes('ชื่อ') || lower.includes('name') || lower.includes('ผู้ตอบ') || lower.includes('สกุล'))) {
-          colIndexMap.name = col;
-        }
-        // Location / Community / Area
-        else if (!colIndexMap.location && (lower.includes('พื้นที่') || lower.includes('ชุมชน') || lower.includes('อำเภอ') || lower.includes('จังหวัด') || lower.includes('หน่วยงาน') || lower.includes('ที่อยู่') || lower.includes('ตำบล'))) {
-          colIndexMap.location = col;
-        }
-        // Image / Analysis Attachment Link
-        else if (!colIndexMap.imageOrLink && (lower.includes('รูป') || lower.includes('ภาพ') || lower.includes('ภาพถ่าย') || lower.includes('link') || lower.includes('url') || lower.includes('วิเคราะห์') || lower.includes('drive') || lower.includes('ไฟล์'))) {
-          colIndexMap.imageOrLink = col;
-        }
-        // Scores or evaluation ratings
-        else if (lower.includes('คะแนน') || lower.includes('ระดับ') || lower.includes('ประเมิน') || lower.includes('score') || lower.includes('rating')) {
-          colIndexMap.scores.push(col);
-        }
-      });
-
-      // Default fallbacks if exact keywords not matched
-      if (!colIndexMap.timestamp && parsedColumns[0]) colIndexMap.timestamp = parsedColumns[0];
-      if (!colIndexMap.name && parsedColumns[1]) colIndexMap.name = parsedColumns[1];
-      if (!colIndexMap.location && parsedColumns[2]) colIndexMap.location = parsedColumns[2];
-    }
-
-    // Populate Filter Dropdown
-    function populateAreaDropdown() {
-      const areaSelect = document.getElementById('filterArea');
-      const currentVal = areaSelect.value;
-      areaSelect.innerHTML = '<option value="">ทุกพื้นที่ / ทุกกลุ่ม</option>';
-
-      if (!colIndexMap.location) return;
-
-      const areaSet = new Set();
-      rawSurveyData.forEach(row => {
-        const loc = (row[colIndexMap.location] || '').trim();
-        if (loc) areaSet.add(loc);
-      });
-
-      Array.from(areaSet).sort().forEach(area => {
-        const opt = document.createElement('option');
-        opt.value = area;
-        opt.textContent = area;
-        if (area === currentVal) opt.selected = true;
-        areaSelect.appendChild(opt);
-      });
-    }
-
-    // Update KPI Metric Cards
-    function updateKPIs() {
-      // 1. Total responses
-      document.getElementById('kpiTotalCount').textContent = rawSurveyData.length;
-
-      // 2. Distinct Areas / Communities
-      const areaSet = new Set();
-      let withImagesCount = 0;
-
-      rawSurveyData.forEach(row => {
-        if (colIndexMap.location && row[colIndexMap.location]) {
-          areaSet.add(row[colIndexMap.location].trim());
-        }
-
-        // Count images/links
-        const imgVal = colIndexMap.imageOrLink ? (row[colIndexMap.imageOrLink] || '').trim() : '';
-        if (imgVal && (imgVal.startsWith('http') || imgVal.includes('drive.google') || imgVal.endsWith('.jpg') || imgVal.endsWith('.png'))) {
-          withImagesCount++;
-        }
-      });
-
-      document.getElementById('kpiProvincesCount').textContent = areaSet.size || 1;
-      document.getElementById('kpiAnalysisWithImages').textContent = withImagesCount;
-
-      // 3. Latest Submission
-      if (rawSurveyData.length > 0) {
-        const lastRow = rawSurveyData[rawSurveyData.length - 1];
-        const lastTime = colIndexMap.timestamp && lastRow[colIndexMap.timestamp] ? lastRow[colIndexMap.timestamp] : 'เพิ่งส่งเข้ามา';
-        document.getElementById('kpiLatestTimestamp').textContent = lastTime;
-        document.getElementById('kpiLatestAgo').textContent = 'ล่าสุดโดย ' + (colIndexMap.name && lastRow[colIndexMap.name] ? lastRow[colIndexMap.name] : 'ผู้เข้าร่วมวิจัย');
-      } else {
-        document.getElementById('kpiLatestTimestamp').textContent = '--';
-      }
-    }
-
-    // Filter Logic
-    function applyFilters() {
-      const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-      const areaFilter = document.getElementById('filterArea').value;
-
-      filteredData = rawSurveyData.filter(row => {
-        // Area matching
-        if (areaFilter && colIndexMap.location && row[colIndexMap.location] !== areaFilter) {
-          return false;
-        }
-
-        // Query matching across all row values
-        if (query) {
-          const combined = Object.values(row).join(' ').toLowerCase();
-          return combined.includes(query);
-        }
-
-        return true;
-      });
-
-      renderTable();
-      document.getElementById('recordsCountBadge').textContent = `${filteredData.length} รายการ`;
-    }
-
-    // Render Table Rows
-    function renderTable() {
-      const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '';
-
-      if (filteredData.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="6" class="text-center py-10 text-slate-400">
-              <i class="fa-solid fa-folder-open text-3xl mb-2 text-slate-300"></i>
-              <p>ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา</p>
-            </td>
-          </tr>
-        `;
-        return;
-      }
-
-      filteredData.forEach((row, idx) => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50/80 transition duration-150 border-b border-slate-100';
-
-        const timestamp = colIndexMap.timestamp ? (row[colIndexMap.timestamp] || '-') : '-';
-        const name = colIndexMap.name ? (row[colIndexMap.name] || 'ผู้เข้าร่วมวิจัย #' + (idx + 1)) : ('ผู้เข้าร่วม #' + (idx + 1));
-        const location = colIndexMap.location ? (row[colIndexMap.location] || 'ไม่ระบุพื้นที่') : 'ลำปาง';
-        
-        // Extract a preview rating / key metric
-        let scoreText = 'ผ่านเกณฑ์มาตรฐาน';
-        if (colIndexMap.scores.length > 0) {
-          const firstScore = row[colIndexMap.scores[0]];
-          if (firstScore) {
-            scoreText = `${colIndexMap.scores[0]}: <strong class="text-emerald-700">${firstScore}</strong>`;
+    // ฟังก์ชันฉลาดค้นหาคอลัมน์จากคำสำคัญ
+    function processRows(rows) {
+      return rows.map((r, index) => {
+        const keys = Object.keys(r);
+        const findVal = (terms) => {
+          for (let key of keys) {
+            for (let term of terms) {
+              if (key.toLowerCase().includes(term.toLowerCase())) {
+                return (r[key] || "").trim();
+              }
+            }
           }
-        }
+          return "";
+        };
 
-        // Check if has image/link
-        const rawLink = colIndexMap.imageOrLink ? (row[colIndexMap.imageOrLink] || '').trim() : '';
-        const hasDirectImage = rawLink && (rawLink.startsWith('http') || rawLink.includes('drive.google.com'));
+        const timestamp = findVal(["timestamp", "ประทับเวลา", "เวลา", "date"]) || `รายการที่ ${index + 1}`;
+        const name = findVal(["ชื่อ", "name", "ผู้ให้", "ผู้ตอบ", "ผู้สำรวจ"]) || `ผู้ตอบแบบสำรวจ #${index + 1}`;
+        const area = findVal(["พื้นที่", "อำเภอ", "ตำบล", "หมู่", "หน่วยงาน", "องค์กร", "ชุมชน", "location", "address", "area"]) || "พื้นที่ทั่วไป/ไม่ระบุ";
+        const topic = findVal(["วิเคราะห์", "ประเด็น", "ปัญหา", "เรื่อง", "รายละเอียด", "หัวข้อ", "topic", "detail"]) || "ข้อมูลสำรวจ PAR ทั่วไป";
+        const image = findVal(["รูป", "ภาพ", "image", "file", "แนบ", "หลักฐาน", "drive", "link", "url"]);
 
-        tr.innerHTML = `
-          <td class="py-3.5 px-4 text-center font-mono text-slate-400 font-medium">${idx + 1}</td>
-          <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">
-            <span class="inline-flex items-center gap-1.5">
-              <i class="fa-regular fa-clock text-slate-400"></i>
-              ${escapeHtml(timestamp)}
-            </span>
-          </td>
-          <td class="py-3.5 px-4 font-medium text-slate-800">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs uppercase shadow-sm">
-                ${escapeHtml(name.charAt(0) || 'U')}
-              </div>
-              <span class="font-semibold text-slate-900">${escapeHtml(name)}</span>
-            </div>
-          </td>
-          <td class="py-3.5 px-4">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
-              <i class="fa-solid fa-location-dot text-slate-400 mr-1 text-[10px]"></i>
-              ${escapeHtml(location)}
-            </span>
-          </td>
-          <td class="py-3.5 px-4 text-slate-600">
-            <span class="text-xs bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200/50">
-              ${scoreText}
-            </span>
-          </td>
-          <td class="py-3.5 px-4 text-center">
-            <button onclick="openAnalysisModal(${rawSurveyData.indexOf(row)})" 
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm hover:from-emerald-700 hover:to-teal-700 active:scale-95 transition">
-              <i class="fa-solid fa-eye"></i>
-              <span>ดูรูปการวิเคราะห์</span>
-              ${hasDirectImage ? '<span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse"></span>' : ''}
-            </button>
-          </td>
-        `;
-
-        tbody.appendChild(tr);
+        return {
+          id: index + 1,
+          timestamp,
+          name,
+          area,
+          topic,
+          imageUrl: image,
+          raw: r
+        };
       });
     }
 
-    // Render Charts using Chart.js
+    function updateDashboardUI() {
+      // 1. KPI Cards
+      const total = rawData.length;
+      const uniqueAreas = new Set(rawData.map(d => d.area)).size;
+      const imageCount = rawData.filter(d => d.imageUrl && d.imageUrl.length > 5).length;
+      const latestTime = rawData.length > 0 ? rawData[rawData.length - 1].timestamp : "--";
+
+      document.getElementById("stat-total").textContent = total.toLocaleString() + " คน";
+      document.getElementById("stat-areas").textContent = uniqueAreas.toLocaleString() + " พื้นที่";
+      document.getElementById("stat-images").textContent = imageCount.toLocaleString() + " รายการ";
+      document.getElementById("stat-latest-time").textContent = latestTime.split(" ")[0] || latestTime;
+      document.getElementById("badge-chart-count").textContent = `รวม ${total} คน`;
+
+      // 2. Charts
+      renderCharts();
+
+      // 3. Table
+      renderTable();
+    }
+
     function renderCharts() {
-      renderBarChart();
-      renderDonutChart();
-    }
-
-    function renderBarChart() {
-      const ctx = document.getElementById('barAreaChart').getContext('2d');
-      
-      // Aggregate counts by Location
-      const areaMap = {};
-      rawSurveyData.forEach(row => {
-        const loc = colIndexMap.location ? (row[colIndexMap.location] || 'ไม่ระบุพื้นที่').trim() : 'พื้นที่ทั่วไป';
-        areaMap[loc] = (areaMap[loc] || 0) + 1;
+      // Bar Chart: นับจำนวนตามพื้นที่
+      const areaCounts = {};
+      rawData.forEach(d => {
+        areaCounts[d.area] = (areaCounts[d.area] || 0) + 1;
       });
+      const areaLabels = Object.keys(areaCounts);
+      const areaValues = Object.values(areaCounts);
 
-      const labels = Object.keys(areaMap);
-      const dataValues = Object.values(areaMap);
+      const ctxBar = document.getElementById("barAreaChart").getContext("2d");
+      if (barChartInstance) barChartInstance.destroy();
 
-      document.getElementById('chartTotalBadge').textContent = `รวม ${rawSurveyData.length} การตอบ`;
-
-      if (barChartInstance) {
-        barChartInstance.destroy();
-      }
-
-      barChartInstance = new Chart(ctx, {
+      barChartInstance = new Chart(ctxBar, {
         type: 'bar',
         data: {
-          labels: labels.length > 0 ? labels : ['ไม่มีข้อมูล'],
+          labels: areaLabels,
           datasets: [{
-            label: 'จำนวนผู้ตอบแบบสำรวจ (คน)',
-            data: dataValues.length > 0 ? dataValues : [0],
-            backgroundColor: 'rgba(16, 185, 129, 0.85)',
-            borderColor: '#059669',
-            borderWidth: 1.5,
-            borderRadius: 8,
-            maxBarThickness: 45
+            label: 'จำนวนผู้ตอบ (คน)',
+            data: areaValues,
+            backgroundColor: '#10b981',
+            borderRadius: 6
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: '#0f172a',
-              titleFont: { family: 'Prompt', size: 13 },
-              bodyFont: { family: 'Prompt', size: 12 },
-              padding: 10,
-              cornerRadius: 8
-            }
-          },
+          plugins: { legend: { display: false } },
           scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { stepSize: 1, font: { family: 'Prompt' } },
-              grid: { color: '#f1f5f9' }
-            },
-            x: {
-              ticks: { font: { family: 'Prompt', size: 11 }, maxRotation: 25 },
-              grid: { display: false }
-            }
+            y: { beginAtZero: true, ticks: { stepSize: 1 } },
+            x: { ticks: { font: { family: "'Sarabun', sans-serif" } } }
           }
         }
       });
-    }
 
-    function renderDonutChart() {
-      const ctx = document.getElementById('donutStatusChart').getContext('2d');
-      
-      let withImageCount = 0;
-      let withoutImageCount = 0;
+      // Pie Chart: แนบรูป vs ไม่แนบรูป
+      const hasImg = rawData.filter(d => d.imageUrl && d.imageUrl.length > 5).length;
+      const noImg = rawData.length - hasImg;
 
-      rawSurveyData.forEach(row => {
-        const link = colIndexMap.imageOrLink ? (row[colIndexMap.imageOrLink] || '').trim() : '';
-        if (link && (link.startsWith('http') || link.includes('drive.google') || link.endsWith('.jpg') || link.endsWith('.png'))) {
-          withImageCount++;
-        } else {
-          withoutImageCount++;
-        }
-      });
+      const ctxPie = document.getElementById("pieImageChart").getContext("2d");
+      if (pieChartInstance) pieChartInstance.destroy();
 
-      if (donutChartInstance) {
-        donutChartInstance.destroy();
-      }
-
-      donutChartInstance = new Chart(ctx, {
+      pieChartInstance = new Chart(ctxPie, {
         type: 'doughnut',
         data: {
-          labels: ['มีรูป/ลิงก์ผลการวิเคราะห์', 'รอแนบเพิ่มเติม'],
+          labels: ['แนบรูป/ผลงาน', 'ยังไม่แนบ'],
           datasets: [{
-            data: [withImageCount, withoutImageCount],
+            data: [hasImg, noImg],
             backgroundColor: ['#10b981', '#cbd5e1'],
-            hoverBackgroundColor: ['#059669', '#94a3b8'],
             borderWidth: 2,
             borderColor: '#ffffff'
           }]
@@ -888,170 +433,112 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { font: { family: 'Prompt', size: 11 }, boxWidth: 12, padding: 15 }
-            }
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: "'Sarabun', sans-serif" } } }
           },
           cutout: '70%'
         }
       });
     }
 
-    // Modal Interaction: Open analysis modal for specific respondent
-    function openAnalysisModal(rowIndex) {
-      const row = rawSurveyData[rowIndex];
-      if (!row) return;
+    function renderTable() {
+      const q = (document.getElementById("searchInput").value || "").toLowerCase();
+      const tbody = document.getElementById("surveyTableBody");
+      
+      const filtered = rawData.filter(item => {
+        return item.name.toLowerCase().includes(q) || 
+               item.area.toLowerCase().includes(q) || 
+               item.topic.toLowerCase().includes(q) ||
+               item.timestamp.toLowerCase().includes(q);
+      });
 
-      const modal = document.getElementById('analysisModal');
-      const modalName = document.getElementById('modalName');
-      const modalSubtitle = document.getElementById('modalSubtitle');
-      const modalDate = document.getElementById('modalDate');
-      const modalLocation = document.getElementById('modalLocation');
-      const modalImageContainer = document.getElementById('modalImageContainer');
-      const modalAnalysisImage = document.getElementById('modalAnalysisImage');
-      const modalGeneratedChartContainer = document.getElementById('modalGeneratedChartContainer');
-      const modalExternalLink = document.getElementById('modalExternalLink');
-      const modalDetailedAnswers = document.getElementById('modalDetailedAnswers');
-
-      const name = colIndexMap.name ? (row[colIndexMap.name] || 'ผู้ให้ข้อมูล') : 'ผู้ให้ข้อมูล';
-      const loc = colIndexMap.location ? (row[colIndexMap.location] || 'ไม่ระบุ') : 'ลำปาง';
-      const date = colIndexMap.timestamp ? (row[colIndexMap.timestamp] || '-') : '-';
-      const rawImageVal = colIndexMap.imageOrLink ? (row[colIndexMap.imageOrLink] || '').trim() : '';
-
-      modalName.textContent = name;
-      modalSubtitle.textContent = `รหัสแบบประเมินลำดับที่ #${rowIndex + 1} | โครงการ PAR ศูนย์ศึกษาและพัฒนาชุมชนลำปาง`;
-      modalDate.textContent = date;
-      modalLocation.textContent = loc;
-
-      // Check if image link is valid
-      const isDirectImg = rawImageVal && (rawImageVal.startsWith('http://') || rawImageVal.startsWith('https://'));
-
-      if (isDirectImg) {
-        modalImageContainer.classList.remove('hidden');
-        modalImageContainer.classList.add('flex');
-        
-        // Handle Google Drive direct view transformation if needed
-        let formattedUrl = rawImageVal;
-        if (formattedUrl.includes('drive.google.com/file/d/')) {
-          const fileIdMatch = formattedUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-          if (fileIdMatch && fileIdMatch[1]) {
-            formattedUrl = `https://drive.google.com/uc?export=view&id=${fileIdMatch[1]}`;
-          }
-        }
-
-        modalAnalysisImage.src = formattedUrl;
-        modalAnalysisImage.onerror = function() {
-          // Fallback placeholder if image link is blocked by permissions
-          this.src = `https://placehold.co/600x400/065f46/ffffff?text=${encodeURIComponent('เอกสารผลการวิเคราะห์ PAR: ' + name)}`;
-        };
-
-        modalExternalLink.href = rawImageVal;
-        modalExternalLink.classList.remove('hidden');
-        modalGeneratedChartContainer.classList.add('hidden');
-      } else {
-        // Generate Radar assessment chart for individual profile
-        modalImageContainer.classList.add('hidden');
-        modalImageContainer.classList.remove('flex');
-        modalExternalLink.classList.add('hidden');
-        modalGeneratedChartContainer.classList.remove('hidden');
-        
-        renderIndividualRadarChart(row);
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">ไม่พบข้อมูลที่ตรงกับคำค้นหา</td></tr>`;
+        document.getElementById("record-count").textContent = `แสดง 0 รายการ`;
+        return;
       }
 
-      // Detailed Answers listing
-      modalDetailedAnswers.innerHTML = '';
-      Object.entries(row).forEach(([key, val]) => {
-        if (!val || val.trim() === '') return;
-        const item = document.createElement('div');
-        item.className = 'flex flex-col sm:flex-row sm:justify-between py-1 border-b border-slate-100/70 gap-1';
-        item.innerHTML = `
-          <span class="text-slate-500 font-medium">${escapeHtml(key)}:</span>
-          <span class="text-slate-800 text-right sm:max-w-xs break-words">${escapeHtml(val)}</span>
+      tbody.innerHTML = filtered.map((item, idx) => {
+        const hasImg = item.imageUrl && item.imageUrl.trim().length > 5;
+        return `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+            <td class="py-3 px-4 font-semibold text-slate-400">${idx + 1}</td>
+            <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${item.timestamp}</td>
+            <td class="py-3 px-4 font-bold text-slate-800">${item.name}</td>
+            <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-medium text-xs">${item.area}</span></td>
+            <td class="py-3 px-4 text-slate-600 max-w-xs truncate">${item.topic}</td>
+            <td class="py-3 px-4 text-center">
+              <button onclick="openModal(${item.id})" 
+                      class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 mx-auto transition shadow-sm ${
+                        hasImg 
+                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      }">
+                <i class="fa-solid ${hasImg ? 'fa-image' : 'fa-chart-simple'}"></i>
+                <span>${hasImg ? 'ดูรูปการวิเคราะห์' : 'ดูสรุปข้อมูล'}</span>
+              </button>
+            </td>
+          </tr>
         `;
-        modalDetailedAnswers.appendChild(item);
-      });
+      }).join('');
 
-      modal.classList.remove('hidden');
+      document.getElementById("record-count").textContent = `แสดง ${filtered.length} จากทั้งหมด ${rawData.length} รายการ`;
     }
 
-    // Close Modal
-    function closeAnalysisModal() {
-      document.getElementById('analysisModal').classList.add('hidden');
-    }
+    function openModal(id) {
+      const item = rawData.find(d => d.id === id);
+      if (!item) return;
 
-    // Render personalized Radar diagram for individual
-    function renderIndividualRadarChart(row) {
-      const canvas = document.getElementById('modalRadarChart');
-      const ctx = canvas.getContext('2d');
+      document.getElementById("modalName").textContent = item.name;
+      document.getElementById("modalArea").textContent = `สังกัด / พื้นที่: ${item.area}`;
+      document.getElementById("modalTimestamp").textContent = `เวลาบันทึก: ${item.timestamp}`;
+      document.getElementById("modalTopic").textContent = item.topic;
 
-      if (modalRadarChartInstance) {
-        modalRadarChartInstance.destroy();
+      const modalImg = document.getElementById("modalImg");
+      const modalFallback = document.getElementById("modalFallback");
+      const modalLoading = document.getElementById("modalLoading");
+      const modalExternalBtn = document.getElementById("modalExternalBtn");
+
+      modalImg.classList.add("hidden");
+      modalFallback.classList.add("hidden");
+      modalLoading.classList.remove("hidden");
+      document.getElementById("imageModal").classList.remove("hidden");
+
+      if (item.imageUrl && item.imageUrl.trim().length > 5) {
+        const directUrl = formatDriveImageUrl(item.imageUrl);
+        modalImg.src = directUrl;
+        modalExternalBtn.href = item.imageUrl;
+
+        modalImg.onload = () => {
+          modalLoading.classList.add("hidden");
+          modalImg.classList.remove("hidden");
+        };
+        modalImg.onerror = () => {
+          // หากรูปติดสิทธิ์ Private หรือเปิดตรงไม่ได้ ให้เปิดปุ่มลิงก์แทน
+          modalLoading.classList.add("hidden");
+          modalFallback.classList.remove("hidden");
+        };
+      } else {
+        modalLoading.classList.add("hidden");
+        modalExternalBtn.classList.add("hidden");
+        modalFallback.classList.remove("hidden");
       }
-
-      // Extract numeric indicators or supply standard PAR dimensions
-      const dimensions = [
-        'การมีส่วนร่วม (Participation)',
-        'การวิเคราะห์ปัญหา (Problem Analysis)',
-        'การวางแผนปฏิบัติการ (Action Plan)',
-        'การติดตามผล (Monitoring)',
-        'ความยั่งยืนชุมชน (Sustainability)'
-      ];
-
-      // Derive score if numeric values exist, else generate consistent deterministic values based on respondent name
-      let baseScore = 4.2;
-      const scores = dimensions.map((_, i) => {
-        const val = 3.8 + (((i * 7 + (row[colIndexMap.name] || '').length) % 13) / 10);
-        return Math.min(5, Math.max(3.2, parseFloat(val.toFixed(1))));
-      });
-
-      modalRadarChartInstance = new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: dimensions,
-          datasets: [{
-            label: 'ระดับการประเมินมิติ PAR',
-            data: scores,
-            backgroundColor: 'rgba(16, 185, 129, 0.25)',
-            borderColor: '#059669',
-            pointBackgroundColor: '#047857',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: '#047857'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            r: {
-              suggestedMin: 0,
-              suggestedMax: 5,
-              ticks: { stepSize: 1, font: { family: 'Prompt', size: 10 } },
-              pointLabels: { font: { family: 'Prompt', size: 10 } }
-            }
-          }
-        }
-      });
     }
 
-    // Helper: Escape HTML string
-    function escapeHtml(text) {
-      if (!text) return '';
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
+    function closeModal() {
+      document.getElementById("imageModal").classList.add("hidden");
+      document.getElementById("modalImg").src = "";
     }
 
-    // Close modal when clicking backdrop
-    window.addEventListener('click', function(e) {
-      const modal = document.getElementById('analysisModal');
-      if (e.target === modal) {
-        closeAnalysisModal();
-      }
+    function showEmpty() {
+      document.getElementById("surveyTableBody").innerHTML = `
+        <tr><td colspan="6" class="text-center py-8 text-slate-400">ยังไม่มีข้อมูลใน Google Sheet หรือชีตยังว่างอยู่</td></tr>
+      `;
+    }
+
+    // โหลดครั้งแรก และตั้งเวลารีเฟรชอัตโนมัติทุก 30 วินาที
+    window.addEventListener("DOMContentLoaded", () => {
+      loadSheetData();
+      setInterval(() => loadSheetData(false), 30000);
     });
   </script>
 </body>
